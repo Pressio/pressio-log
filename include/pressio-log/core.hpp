@@ -51,6 +51,8 @@
 
 #include "./logger/logger.hpp"
 
+// Standard Logging Macros
+
 #define LOG(level, ...) \
    pressiolog::Logger::pressio_logger()->log(level, __VA_ARGS__);
 
@@ -59,5 +61,16 @@
 #define PRESSIOLOG_DEBUG(...) LOG(pressiolog::level::debug, __VA_ARGS__)
 #define PRESSIOLOG_WARNING(...) LOG(pressiolog::level::warning, __VA_ARGS__)
 #define PRESSIOLOG_ERROR(...) LOG(pressiolog::level::error, __VA_ARGS__)
+
+// Macros for setting logging level
+
+#define SET_LEVEL(...) \
+    pressiolog::Logger::pressio_logger()->setCurrentLevel(__VA_ARGS__);
+
+#define RESET_LEVEL() \
+    pressiolog::Logger::pressio_logger()->resetCurrentLevel();
+
+#define PRESSIOLOG_SET_LEVEL(...)   SET_LEVEL(__VA_ARGS__)
+#define PRESSIOLOG_RESET_LEVEL(...) RESET_LEVEL(__VA_ARGS__)
 
 #endif // PRESSIOLOG_CORE_HPP

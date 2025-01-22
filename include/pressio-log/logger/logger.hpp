@@ -106,12 +106,21 @@ class Logger {
             }
         }
 
+        void setCurrentLevel(level level) {
+            current_level_ = level;
+        }
+
+        void resetCurrentLevel() {
+            #ifdef PRESSIOLOG_LOG_LEVEL
+            current_level_ = static_cast<level>(PRESSIOLOG_LOG_LEVEL);
+            #else
+            current_level_ = level::basic;
+            #endif
+        }
+
     private:
         Logger() {
-            #ifndef PRESSIOLOG_LOG_LEVEL
-            #define PRESSIOLOG_LOG_LEVEL 1
-            #endif
-            current_level_ = PRESSIOLOG_LOG_LEVEL;
+            resetCurrentLevel();
         }
 
         // Internal logging functions
@@ -132,7 +141,9 @@ class Logger {
         }
         void warning_(const std::string& message) {
             #if not PRESSIOLOG_SILENCE_WARNINGS
-            log_("[WARNING] " + message);
+            if (current_level_ > level::none) {
+                log_("[WARNING] " + message);
+            }
             #endif
         }
         void error_(const std::string& message) {
@@ -145,7 +156,7 @@ class Logger {
         }
 
         // Member variables
-        int current_level_;
+        level current_level_;
 };
 
 } // end namespace pressiolog
