@@ -20,12 +20,14 @@ cd build
 cmake -D PRESSIO_LOG_LEVEL=DEBUG .. && make
 ```
 
-All logging levels (you can pass either the number of the string):
+All logging levels:
 
-0 - "None"
-1 - "Basic"
-2 - "Info"
-3 - "Debug"
+- 0 - "None"
+- 1 - "Basic"
+- 2 - "Info"
+- 3 - "Debug"
+
+You can pass either the number or the corresponding string as the argument.
 
 3. Include the library
 
