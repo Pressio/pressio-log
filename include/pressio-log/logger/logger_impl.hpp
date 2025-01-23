@@ -154,7 +154,6 @@ void Logger::info_(const std::string& message) {
     }
 }
 void Logger::debug_(const std::string& message) {
-    std::cout << " about to debug print: " << (current_level_ >= LogLevel::debug) << std::endl;
     if (current_level_ >= LogLevel::debug) {
         log_(message);
     }
