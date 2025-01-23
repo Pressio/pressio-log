@@ -32,6 +32,7 @@ jobs:
           - Debug
         cmake_extra_args:
           - ''
+          - '-D PRESSIO_ENABLE_TPL_MPI=ON'
         include:
           - image: ubuntu-clang-14
             build_type: Release
@@ -43,13 +44,20 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
+    env:
+      num_cpus: 3
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install MPI
+        if: contains(matrix.cmake_extra_args, 'PRESSIO_ENABLE_TPL_MPI')
+        run: |
+          apt-get update && apt-get install -y mpich libmpich-dev
+
       - name: Configure
         run: |
-          cmake -B build
+            cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.cmake_extra_args }}
 
       - name: Build
         run: |
