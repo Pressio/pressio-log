@@ -52,7 +52,10 @@ jobs:
 
       - name: Configure
         run: |
-            cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ${{ matrix.cmake_extra_args }}
+          cmake -B build \
+                -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                -D CMAKE_CXX_FLAGS="-Werror" \
+                ${{ matrix.cmake_extra_args }}
 
       - name: Build
         run: |
