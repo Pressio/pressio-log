@@ -59,10 +59,9 @@ namespace pressiolog {
 // Public logging functions
 
 void Logger::log(LogLevel level, const std::string& message, int target_rank) {
-    if (level == LogLevel::none) return;
-
-    else if (current_rank_ == target_rank) {
+    if (current_rank_ == target_rank) {
         switch (level) {
+            case LogLevel::none:    return;
             case LogLevel::basic:   basic_(message);   break;
             case LogLevel::info:    info_(message);    break;
             case LogLevel::debug:   debug_(message);   break;
