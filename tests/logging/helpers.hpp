@@ -20,6 +20,6 @@ private:
     std::stringstream ss_;
 };
 
-bool find_in_output(std::string output, std::string str, bool condition) {
+bool check_output(std::string output, std::string str, bool condition) {
     return condition == (output.find(str) != std::string::npos);
 }

@@ -49,26 +49,26 @@
 #ifndef PRESSIOLOG_CORE_HPP_
 #define PRESSIOLOG_CORE_HPP_
 
-#include "./logger/logger.hpp"
+#include "./logger/logger_impl.hpp"
 
-// Standard Logging Macros
+// Standard logging macros
 
 #define LOG(level, ...) \
-   pressiolog::Logger::pressio_logger()->log(level, __VA_ARGS__);
+   pressiolog::Logger::PressioLogger()->log(level, __VA_ARGS__);
 
-#define PRESSIOLOG_BASIC(...) LOG(pressiolog::level::basic, __VA_ARGS__)
-#define PRESSIOLOG_INFO(...) LOG(pressiolog::level::info, __VA_ARGS__)
-#define PRESSIOLOG_DEBUG(...) LOG(pressiolog::level::debug, __VA_ARGS__)
-#define PRESSIOLOG_WARNING(...) LOG(pressiolog::level::warning, __VA_ARGS__)
-#define PRESSIOLOG_ERROR(...) LOG(pressiolog::level::error, __VA_ARGS__)
+#define PRESSIOLOG_BASIC(...)   LOG(pressiolog::LogLevel::basic, __VA_ARGS__)
+#define PRESSIOLOG_INFO(...)    LOG(pressiolog::LogLevel::info, __VA_ARGS__)
+#define PRESSIOLOG_DEBUG(...)   LOG(pressiolog::LogLevel::debug, __VA_ARGS__)
+#define PRESSIOLOG_WARNING(...) LOG(pressiolog::LogLevel::warning, __VA_ARGS__)
+#define PRESSIOLOG_ERROR(...)   LOG(pressiolog::LogLevel::error, __VA_ARGS__)
 
 // Macros for setting logging level
 
 #define SET_LEVEL(...) \
-    pressiolog::Logger::pressio_logger()->setCurrentLevel(__VA_ARGS__);
+    pressiolog::Logger::PressioLogger()->setCurrentLevel(__VA_ARGS__);
 
 #define RESET_LEVEL() \
-    pressiolog::Logger::pressio_logger()->resetCurrentLevel();
+    pressiolog::Logger::PressioLogger()->resetCurrentLevel();
 
 #define PRESSIOLOG_SET_LEVEL(...)   SET_LEVEL(__VA_ARGS__)
 #define PRESSIOLOG_RESET_LEVEL(...) RESET_LEVEL(__VA_ARGS__)

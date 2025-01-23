@@ -1,5 +1,5 @@
 
-macro(add_serial_utest TESTNAME)
+macro(add_utest_serial TESTNAME)
   add_executable(${TESTNAME} ${ARGN} ${GTESTMAINSDIR}/gTestMain_serial.cc)
   target_link_libraries(${TESTNAME} pressio-log gtest_main)
   add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})

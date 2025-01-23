@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 project(pressio-log CXX)
 
 # set logging macros
 #=====================================================================
-option(PRESSIO_LOG_LEVEL
-       "Set the logging level (0=none, 1=basic, 2=info, 3=debug)"
-       1)
+set(PRESSIO_LOG_LEVEL "basic" CACHE STRING "Set the logging level (None, Basic, Info, Debug)")
+set_property(CACHE PRESSIO_LOG_LEVEL PROPERTY STRINGS "None" "Basic" "Info" "Debug")
 
 set(PRESSIO_LOG_LEVEL_MAP_NONE 0)
 set(PRESSIO_LOG_LEVEL_MAP_BASIC 1)

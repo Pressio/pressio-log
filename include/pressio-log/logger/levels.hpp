@@ -51,13 +51,13 @@
 
 namespace pressiolog {
 
-enum level : int {
-    none    = 0,
-    basic   = 1,
-    info    = 2,
-    debug   = 3,
-    warning = 4,
-    error   = 5
+enum class LogLevel : int {
+    none,
+    basic,
+    info,
+    debug,
+    warning,
+    error
 };
 
 } // end namespace pressiolog

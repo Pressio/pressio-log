@@ -1,7 +1,11 @@
+option(PRESSIO_ENABLE_TPL_MPI "Enable MPI" OFF)
+
 if(PRESSIO_ENABLE_TPL_MPI)
   message(">> Enabling MPI since PRESSIO_ENABLE_TPL_MPI=ON")
-  add_definitions(-DPRESSIO_ENABLE_TPL_MPI)
-
+  add_compile_definitions(PRESSIOLOG_ENABLE_MPI=1)
   find_package(MPI REQUIRED)
+  link_libraries(${MPI_CXX_LIBRARIES})
   include_directories(SYSTEM ${MPI_CXX_INCLUDE_DIRS})
+else()
+  add_compile_definitions(PRESSIOLOG_ENABLE_MPI=0)
 endif()

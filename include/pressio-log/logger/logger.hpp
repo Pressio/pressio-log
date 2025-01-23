@@ -49,10 +49,9 @@
 #ifndef PRESSIOLOG_LOGGER_LOGGER_HPP_
 #define PRESSIOLOG_LOGGER_LOGGER_HPP_
 
+#include <mutex>
 #include <memory>
-#include <iostream>
-
-#ifdef PRESSIO_ENABLE_TPL_MPI
+#if PRESSIOLOG_ENABLE_MPI
 #include <mpi.h>
 #endif
 
@@ -69,94 +68,57 @@ namespace pressiolog {
 
 class Logger {
     public:
-
         // Delete copy and assignment ops
         Logger(Logger &other) = delete;
         void operator=(const Logger &) = delete;
 
-        // Define getter ftn
-        static std::shared_ptr<Logger> pressio_logger() {
+        // Return singleton instance of PressioLogger
+        static std::shared_ptr<Logger> PressioLogger() {
             static std::shared_ptr<Logger> instance(new Logger());
             return instance;
         }
 
-        // Public logging function
-        void log(level level, const std::string& message) {
-            switch (level) {
-                case none:
-                    break;
-                case basic:
-                    basic_(message);
-                    break;
-                case info:
-                    info_(message);
-                    break;
-                case debug:
-                    debug_(message);
-                    break;
-                case warning:
-                    warning_(message);
-                    break;
-                case error:
-                    error_(message);
-                    break;
-                default:
-                    info_(message);
-                    break;
-            }
-        }
+        // Public logging functions
+        void log(LogLevel level, const std::string& message, int target_rank=0);
+        #if PRESSIOLOG_ENABLE_MPI
+        void log(LogLevel level, const std::string& message, int target_rank, MPI_Comm comm);
+        #endif
 
-        void setCurrentLevel(level level) {
-            current_level_ = level;
-        }
-
-        void resetCurrentLevel() {
-            #ifdef PRESSIOLOG_LOG_LEVEL
-            current_level_ = static_cast<level>(PRESSIOLOG_LOG_LEVEL);
-            #else
-            current_level_ = level::basic;
-            #endif
-        }
+        // Set or reset the current logging level
+        void setCurrentLevel(LogLevel level);
+        void resetCurrentLevel();
 
     private:
-        Logger() {
-            resetCurrentLevel();
-        }
+        // Private constructor
+        Logger();
+
+        // MPI helpers
+        #if PRESSIOLOG_ENABLE_MPI
+        void setComm_(MPI_Comm comm);
+        void updateCurrentRank_();
+        #endif
+
+        // Formatting
+        std::string formatRank_() const;
+        std::string formatWarning_(const std::string& message) const;
+        std::string formatError_(const std::string& message) const;
 
         // Internal logging functions
-        void basic_(const std::string& message) {
-            if (current_level_ >= level::basic) {
-                log_(message);
-            }
-        }
-        void info_(const std::string& message) {
-            if (current_level_ >= level::info) {
-                log_(message);
-            }
-        }
-        void debug_(const std::string& message) {
-            if (current_level_ >= level::debug) {
-                log_(message);
-            }
-        }
-        void warning_(const std::string& message) {
-            #if not PRESSIOLOG_SILENCE_WARNINGS
-            if (current_level_ > level::none) {
-                log_("[WARNING] " + message);
-            }
-            #endif
-        }
-        void error_(const std::string& message) {
-            log_("[ERROR]   " + message);
-        }
-
-        // Low level logger
-        void log_(const std::string& message) {
-            std::cout << message << std::endl;
-        }
+        void basic_(const std::string& message);
+        void info_(const std::string& message);
+        void debug_(const std::string& message);
+        void warning_(const std::string& message);
+        void error_(const std::string& message);
+        void log_(const std::string& message);
 
         // Member variables
-        level current_level_;
+        std::mutex mutex_;
+        LogLevel current_level_;
+        int current_rank_;
+        #if PRESSIOLOG_ENABLE_MPI
+        bool mpi_initialized_;
+        MPI_Comm comm_ = MPI_COMM_WORLD;
+        #endif
 };
 
 } // end namespace pressiolog
