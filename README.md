@@ -1,17 +1,29 @@
 # pressio-log
 Logging functionality for Pressio repositories
 
-This is a work in progress, and all subsequent information is subject to change.
+_This is a work in progress, and all subsequent information is subject to change._
 
 ## Instructions for Use:
 
-1. Clone the repo
+1. **Clone** the repo
 
 ```sh
 git clone https://github.com/Pressio/pressio-log.git
 ```
 
-2. Set logging level in CMake and build tests
+2. **Configure** the logger via CMake
+
+| CMake Variable                | Default Value |                     All Options |
+| :---------------------------- | ------------: | ------------------------------: |
+| `-D PRESSIO_LOG_LEVEL`        |        `basic`| `none`, `basic`, `info`, `debug`|
+| `-D PRESSIO_LOG_OUTPUT`       |      `console`|        `console`, `file`, `both`|
+| `-D PRESSIO_SILENCE_WARNINGS` |          `OFF`|                       `ON`/`OFF`|
+| `-D PRESSIO_ENABLE_TPL_MPI`   |          `OFF`|                       `ON`/`OFF`|
+
+> [!NOTE]
+> If `PRESSIO_LOG_OUTPUT` is set to `file` or `both`, the output will be written to `pressio.log`.
+
+Sample build command:
 
 ```sh
 cd pressio-log
@@ -20,26 +32,15 @@ cd build
 cmake -D PRESSIO_LOG_LEVEL=DEBUG .. && make
 ```
 
-All logging levels:
+3. **Include** the library
 
-- 0 - "None"
-- 1 - "Basic"
-- 2 - "Info"
-- 3 - "Debug"
-
-You can pass either the number or the corresponding string as the argument.
-
-3. Include the library
-
-Point to `pressio-log/include` to include the relevant files.
-
-4. Include the core file
+Add `pressio-log/include` to your project's include directories, and include the core file:
 
 ```cpp
 #include <pressio-log/core.hpp>
 ```
 
-5. Use the library
+5. **Use** the library
 
 All logging is handled via macros:
 
@@ -52,13 +53,22 @@ PRESSIOLOG_ERROR("message");
 ```
 
 Errors will print regardless of the logging level.
-Warnings will print for any level above "none".
+Warnings will print for any level besides `none`.
+
+To override the configured logging level, use:
+
+```cpp
+PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::<none/basic/info/debug>)
+```
 
 ## Testing
 
-After you have built (see step 2), run:
+After you have built the tests (see step 2), run:
 
 ```sh
 cd pressio-log/build/tests/logging
-ctest
+ctest -j <np>
 ```
+
+> [!NOTE]
+> All MPI tests require at least three ranks to run properly.
