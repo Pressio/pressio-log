@@ -47,12 +47,18 @@ jobs:
 
       - name: Prepare environment
         run: |
-          echo "localhost slots=$num_cpus" | tee -a /etc/openmpi/openmpi-default-hostfile
+          if grep -qi 'fedora' /etc/os-release; then
+            hostfile="/usr/lib64/openmpi-default-hostfile"
+          else
+            hostfile="/etc/openmpi/openmpi-default-hostfile"
+          fi
+          echo "localhost slots=$num_cpus" | sudo tee -a $hostfile
 
       - name: Configure
         run: |
           cmake -B build \
                 -D CMAKE_BUILD_TYPE=Debug \
+                -D CMAKE_PREFIX_PATH=/usr/lib64 \
                 -D CMAKE_CXX_FLAGS="-Werror" \
                 ${{ matrix.cmake_extra_args }}
 
