@@ -23,11 +23,10 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - fedora-clang-mpi-17
-          - fedora-gnu-mpi-13
+          - fedora-clang-17
+          - fedora-gnu-13
         cmake_extra_args:
           - ''
-          - '-D PRESSIO_ENABLE_TPL_MPI=ON'
 
     runs-on: ubuntu-latest
     container:
@@ -35,33 +34,15 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
-    env:
-      num_cpus: 3
-      OMPI_ALLOW_RUN_AS_ROOT: 1
-      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Prepare environment
-        run: |
-          echo "localhost slots=$num_cpus" | tee -a /usr/lib64/openmpi-default-hostfile
-
-      - name: Set MPI environment variables
-        run: |
-          export PATH=/usr/lib64/openmpi/bin:$PATH
-          export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH
-          export MPI_CXX=/usr/lib64/openmpi/bin/mpicxx
-          export MPI_CC=/usr/lib64/openmpi/bin/mpicc
 
       - name: Configure
         run: |
           cmake -B build \
                 -D CMAKE_BUILD_TYPE=Debug \
                 -D CMAKE_CXX_FLAGS="-Werror" \
-                -D CMAKE_CXX_COMPILER=${MPI_CXX} \
-                -D MPI_C_COMPILER=${MPI_CC} \
-                -D MPI_CXX_COMPILER=${MPI_CXX} \
                 ${{ matrix.cmake_extra_args }}
 
       - name: Build
@@ -71,4 +52,4 @@ jobs:
       - name: Run tests
         working-directory: build/tests/logging
         run: |
-          ctest -j $num_cpus --output-on-failure
+          ctest --output-on-failure
