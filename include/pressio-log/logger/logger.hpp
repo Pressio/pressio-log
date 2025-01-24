@@ -87,7 +87,7 @@ class Logger {
         #endif
 
         // Public setters (for testing)
-        void setCurrentLevel(LogLevel level);
+        void setLoggingLevel(LogLevel level);
         void setOutputStream(LogTo destination);
 
     private:
@@ -101,7 +101,7 @@ class Logger {
         #endif
 
         // Private setters
-        void resetCurrentLevel_();
+        void resetLoggingLevel_();
         void setDestination_();
         void setDestinationBools_();
 

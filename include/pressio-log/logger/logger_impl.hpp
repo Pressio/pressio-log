@@ -85,7 +85,7 @@ void Logger::log(LogLevel level, const std::string& message, int target_rank, MP
 ///////////////////////////////////////////////////////////////////////////////
 // Public setters (for testing)
 
-void Logger::setCurrentLevel(LogLevel level) {
+void Logger::setLoggingLevel(LogLevel level) {
     current_level_ = level;
 }
 
@@ -106,7 +106,7 @@ Logger::Logger() : current_rank_(0) {
     }
     #endif
     formatRankString_();
-    resetCurrentLevel_();
+    resetLoggingLevel_();
     setDestination_();
 }
 
@@ -129,11 +129,11 @@ void Logger::updateCurrentRank_() {
 ///////////////////////////////////////////////////////////////////////////////
 // Private setters
 
-void Logger::resetCurrentLevel_() {
+void Logger::resetLoggingLevel_() {
     #ifdef PRESSIOLOG_LOG_LEVEL
-    setCurrentLevel(static_cast<LogLevel>(PRESSIOLOG_LOG_LEVEL));
+    setLoggingLevel(static_cast<LogLevel>(PRESSIOLOG_LOG_LEVEL));
     #else
-    setCurrentLevel(LogLevel::basic);
+    setLoggingLevel(LogLevel::basic);
     #endif
 }
 void Logger::setDestination_() {

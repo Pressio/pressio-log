@@ -65,7 +65,7 @@
 // Macros for testing
 
 #define PRESSIOLOG_SET_LEVEL(...) \
-    pressiolog::Logger::PressioLogger()->setCurrentLevel(__VA_ARGS__);
+    pressiolog::Logger::PressioLogger()->setLoggingLevel(__VA_ARGS__);
 
 #define PRESSIOLOG_SET_OUTPUT_STREAM(...) \
     pressiolog::Logger::PressioLogger()->setOutputStream(__VA_ARGS__);
