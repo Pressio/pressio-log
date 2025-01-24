@@ -23,6 +23,7 @@ void runTest(LogLevel level) {
     CoutRedirector redirect;
 
     PRESSIOLOG_SET_LEVEL(level);
+    PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo::console);
 
     PRESSIOLOG_BASIC("Basic");
     PRESSIOLOG_INFO("Info", 0);

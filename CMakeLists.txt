@@ -29,6 +29,29 @@ endif()
 
 add_compile_definitions(PRESSIOLOG_LOG_LEVEL=${PRESSIO_LOG_LEVEL})
 
+#########################
+
+set(PRESSIO_LOG_OUTPUT "console" CACHE STRING "Set the logging output (console, file, both)")
+set_property(CACHE PRESSIO_LOG_OUTPUT PROPERTY STRINGS "console" "file" "both")
+
+set(PRESSIO_LOG_OUTPUT_MAP_CONSOLE 0)
+set(PRESSIO_LOG_OUTPUT_MAP_FILE 1)
+set(PRESSIO_LOG_OUTPUT_MAP_BOTH 2)
+
+string(TOLOWER "${PRESSIO_LOG_OUTPUT}" PRESSIO_LOG_OUTPUT)
+
+if(PRESSIO_LOG_OUTPUT STREQUAL "console")
+    set(PRESSIO_LOG_OUTPUT ${PRESSIO_LOG_OUTPUT_MAP_CONSOLE})
+elseif(PRESSIO_LOG_OUTPUT STREQUAL "file")
+    set(PRESSIO_LOG_OUTPUT ${PRESSIO_LOG_OUTPUT_MAP_FILE})
+elseif(PRESSIO_LOG_OUTPUT STREQUAL "both")
+    set(PRESSIO_LOG_OUTPUT ${PRESSIO_LOG_OUTPUT_MAP_BOTH})
+else()
+    message(FATAL_ERROR "Invalid PRESSIO_LOG_OUTPUT: '${PRESSIO_LOG_OUTPUT}'. Use 'console', 'file', or 'both'")
+endif()
+
+add_compile_definitions(PRESSIOLOG_OUTPUT=${PRESSIO_LOG_OUTPUT})
+
 option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
 if (PRESSIO_SILENCE_WARNINGS)
   add_compile_definitions(PRESSIOLOG_SILENCE_WARNINGS=1)

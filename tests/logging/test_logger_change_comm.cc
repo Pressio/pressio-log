@@ -26,6 +26,7 @@ void runTest() {
     EXPECT_LT(size, orig_size);
 
     PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::debug);
+    PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo::console);
 
     // Check that new comm is being used (nothing should print on too-high rank)
     CoutRedirector empty_redirect;
