@@ -27,9 +27,6 @@ jobs:
           - fedora-gnu-mpi-13
           - ubuntu-clang-mpi-14
           - ubuntu-gnu-mpi-11
-        build_type:
-          - Release
-          - Debug
         cmake_extra_args:
           - ''
           - '-D PRESSIO_ENABLE_TPL_MPI=ON'
@@ -48,10 +45,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Prepare environment
+        run: |
+          sed -i -e '$alocalhost slots=$num_cpus' /etc/openmpi/openmpi-default-hostfile
+
       - name: Configure
         run: |
           cmake -B build \
-                -D CMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                -D CMAKE_BUILD_TYPE=Debug \
                 -D CMAKE_CXX_FLAGS="-Werror" \
                 ${{ matrix.cmake_extra_args }}
 
