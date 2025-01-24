@@ -42,6 +42,8 @@ jobs:
         password: ${{ secrets.github_token }}
     env:
       num_cpus: 3
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
 
     steps:
       - uses: actions/checkout@v4
