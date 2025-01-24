@@ -1,4 +1,5 @@
 #include <sstream>
+#include <fstream>
 #include <iostream>
 
 // Helper class to redirect std::cout to a stringstream
@@ -22,4 +23,14 @@ private:
 
 bool check_output(std::string output, std::string str, bool condition) {
     return condition == (output.find(str) != std::string::npos);
+}
+
+std::string read_file(std::string fileName) {
+    std::ifstream file(fileName);
+    if (!file) {
+        throw std::runtime_error("Failed to open file: " + fileName);
+    }
+    std::ostringstream oss;
+    oss << file.rdbuf();
+    return oss.str();
 }

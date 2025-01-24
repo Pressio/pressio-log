@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// core.hpp
+// logto.hpp
 //                     		     pressio-log
 //                             Copyright 2025
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,28 +46,17 @@
 //@HEADER
 */
 
-#ifndef PRESSIOLOG_CORE_HPP_
-#define PRESSIOLOG_CORE_HPP_
+#ifndef PRESSIOLOG_LOGGER_LOGTO_HPP_
+#define PRESSIOLOG_LOGGER_LOGTO_HPP_
 
-#include "./logger/logger_impl.hpp"
+namespace pressiolog {
 
-// Standard logging macros
+enum class LogTo : int {
+    console,
+    file,
+    both
+};
 
-#define LOG(level, ...) \
-   pressiolog::Logger::PressioLogger()->log(level, __VA_ARGS__);
+} // end namespace pressiolog
 
-#define PRESSIOLOG_BASIC(...)   LOG(pressiolog::LogLevel::basic, __VA_ARGS__)
-#define PRESSIOLOG_INFO(...)    LOG(pressiolog::LogLevel::info, __VA_ARGS__)
-#define PRESSIOLOG_DEBUG(...)   LOG(pressiolog::LogLevel::debug, __VA_ARGS__)
-#define PRESSIOLOG_WARNING(...) LOG(pressiolog::LogLevel::warning, __VA_ARGS__)
-#define PRESSIOLOG_ERROR(...)   LOG(pressiolog::LogLevel::error, __VA_ARGS__)
-
-// Macros for testing
-
-#define PRESSIOLOG_SET_LEVEL(...) \
-    pressiolog::Logger::PressioLogger()->setCurrentLevel(__VA_ARGS__);
-
-#define PRESSIOLOG_SET_OUTPUT_STREAM(...) \
-    pressiolog::Logger::PressioLogger()->setOutputStream(__VA_ARGS__);
-
-#endif // PRESSIOLOG_CORE_HPP
+#endif // PRESSIOLOG_LOGGER_LOGTO_HPP_

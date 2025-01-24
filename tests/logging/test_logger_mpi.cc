@@ -37,6 +37,8 @@ void runTest(LogLevel level) {
     EXPECT_TRUE(check_output(output, "[1] Debug",   condition(level, LogLevel::debug, 1, rank)));
     EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::basic, 2, rank)));
     EXPECT_TRUE(check_output(output, "[0] ERROR",   condition(level, LogLevel::none,  0, rank)));
+
+    MPI_Barrier(MPI_COMM_WORLD);
 }
 
 TEST(ParallelLoggerTest, NoLogging) {

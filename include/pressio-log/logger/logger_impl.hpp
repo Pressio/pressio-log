@@ -49,6 +49,7 @@
 #ifndef PRESSIOLOG_LOGGER_LOGGER_IMPL_HPP_
 #define PRESSIOLOG_LOGGER_LOGGER_IMPL_HPP_
 
+#include <fstream>
 #include <iostream>
 
 #include "logger.hpp"
@@ -73,7 +74,6 @@ void Logger::log(LogLevel level, const std::string& message, int target_rank) {
 
 #if PRESSIOLOG_ENABLE_MPI
 void Logger::log(LogLevel level, const std::string& message, int target_rank, MPI_Comm comm) {
-    std::cout << " Calling log 2" << std::endl;
     if (mpi_initialized_) {
         setComm_(comm);
         updateCurrentRank_();
@@ -83,22 +83,19 @@ void Logger::log(LogLevel level, const std::string& message, int target_rank, MP
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-// Set or reset current logging level
+// Public setters (for testing)
 
 void Logger::setCurrentLevel(LogLevel level) {
     current_level_ = level;
 }
 
-void Logger::resetCurrentLevel() {
-    #ifdef PRESSIOLOG_LOG_LEVEL
-    current_level_ = static_cast<LogLevel>(PRESSIOLOG_LOG_LEVEL);
-    #else
-    current_level_ = LogLevel::basic;
-    #endif
+void Logger::setOutputStream(LogTo destination) {
+    dst_ = destination;
+    setDestinationBools_();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Private Constructor
+// Private constructor
 
 Logger::Logger() : current_rank_(0) {
     #if PRESSIOLOG_ENABLE_MPI
@@ -108,11 +105,13 @@ Logger::Logger() : current_rank_(0) {
         updateCurrentRank_();
     }
     #endif
-    resetCurrentLevel();
+    formatRankString_();
+    resetCurrentLevel_();
+    setDestination_();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// MPI Helpers
+// MPI helpers
 
 #if PRESSIOLOG_ENABLE_MPI
 void Logger::setComm_(MPI_Comm comm) {
@@ -123,15 +122,39 @@ void Logger::updateCurrentRank_() {
     if (mpi_initialized_) {
         MPI_Comm_rank(comm_, &current_rank_);
     }
+    formatRankString_();
 }
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
+// Private setters
+
+void Logger::resetCurrentLevel_() {
+    #ifdef PRESSIOLOG_LOG_LEVEL
+    setCurrentLevel(static_cast<LogLevel>(PRESSIOLOG_LOG_LEVEL));
+    #else
+    setCurrentLevel(LogLevel::basic);
+    #endif
+}
+void Logger::setDestination_() {
+    auto writeFile = false;
+    #ifdef PRESSIOLOG_OUTPUT
+    dst_ = static_cast<LogTo>(PRESSIOLOG_OUTPUT);
+    #else
+    dst_ = LogTo::console;
+    #endif
+    setDestinationBools_();
+}
+void Logger::setDestinationBools_() {
+    should_write_ = (dst_ >= LogTo::file) ? true : false;
+    should_log_   = (dst_ == LogTo::console or dst_ == LogTo::both) ? true : false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Formatting
 
-std::string Logger::formatRank_() const {
-    auto rank_str = std::to_string(current_rank_);
-    return "[" + rank_str + "] ";
+void Logger::formatRankString_() {
+    rank_str_ = "[" + std::to_string(current_rank_) + "] ";
 }
 std::string Logger::formatWarning_(const std::string& message) const {
     return "WARNING: " + message;
@@ -168,12 +191,31 @@ void Logger::warning_(const std::string& message) {
 void Logger::error_(const std::string& message) {
     log_(formatError_(message));
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Output Functions
+
 void Logger::log_(const std::string& message) {
+    auto out_str = rank_str_ + message;
     std::lock_guard<std::mutex> lock(mutex_);
-    std::cout << formatRank_() << message << std::endl;
+    if (should_log_)   print_(out_str);
+    if (should_write_) write_(out_str);
+}
+
+void Logger::print_(const std::string& message) {
+    std::cout << message << std::endl;
+}
+
+// TO DO: Opening/closing every time is inefficient,
+//        but we need to determine an exit signal if
+//        if we want to only close at the end.
+void Logger::write_(const std::string& message) {
+    std::ofstream file;
+    file.open(log_file_, std::ios::app);
+    file << message << std::endl;
+    file.close();
 }
 
 } // end namespace pressiolog
-
 
 #endif // PRESSIOLOG_LOGGER_LOGGERIMPL__HPP_

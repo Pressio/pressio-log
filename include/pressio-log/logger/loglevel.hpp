@@ -2,7 +2,7 @@
 //@HEADER
 // ************************************************************************
 //
-// levels.hpp
+// loglevel.hpp
 //                     		     pressio-log
 //                             Copyright 2025
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
@@ -46,8 +46,8 @@
 //@HEADER
 */
 
-#ifndef PRESSIOLOG_LOGGER_LEVELS_HPP_
-#define PRESSIOLOG_LOGGER_LEVELS_HPP_
+#ifndef PRESSIOLOG_LOGGER_LOGLEVEL_HPP_
+#define PRESSIOLOG_LOGGER_LOGLEVEL_HPP_
 
 namespace pressiolog {
 
@@ -62,4 +62,4 @@ enum class LogLevel : int {
 
 } // end namespace pressiolog
 
-#endif // PRESSIOLOG_LOGGER_LEVELS_HPP_
+#endif // PRESSIOLOG_LOGGER_LOGLEVEL_HPP_

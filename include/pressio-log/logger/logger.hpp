@@ -50,16 +50,18 @@
 #define PRESSIOLOG_LOGGER_LOGGER_HPP_
 
 #include <mutex>
+#include <vector>
 #include <memory>
+#include <filesystem>
 #if PRESSIOLOG_ENABLE_MPI
 #include <mpi.h>
 #endif
 
-#include "levels.hpp"
+#include "loglevel.hpp"
+#include "logto.hpp"
 
 /*
  * TO DO:
- * - support for MPI
  * - logging destinations (console, file, both)
  * - colorized output with fmt?
  */
@@ -84,9 +86,9 @@ class Logger {
         void log(LogLevel level, const std::string& message, int target_rank, MPI_Comm comm);
         #endif
 
-        // Set or reset the current logging level
+        // Public setters (for testing)
         void setCurrentLevel(LogLevel level);
-        void resetCurrentLevel();
+        void setOutputStream(LogTo destination);
 
     private:
         // Private constructor
@@ -98,8 +100,13 @@ class Logger {
         void updateCurrentRank_();
         #endif
 
+        // Private setters
+        void resetCurrentLevel_();
+        void setDestination_();
+        void setDestinationBools_();
+
         // Formatting
-        std::string formatRank_() const;
+        void formatRankString_();
         std::string formatWarning_(const std::string& message) const;
         std::string formatError_(const std::string& message) const;
 
@@ -109,12 +116,22 @@ class Logger {
         void debug_(const std::string& message);
         void warning_(const std::string& message);
         void error_(const std::string& message);
+
+        // Output functions
         void log_(const std::string& message);
+        void print_(const std::string& message);
+        void write_(const std::string& message);
 
         // Member variables
         std::mutex mutex_;
         LogLevel current_level_;
         int current_rank_;
+        std::string rank_str_;
+
+        LogTo dst_;
+        bool should_write_, should_log_;
+        const std::string log_file_ = "pressio.log";
+
         #if PRESSIOLOG_ENABLE_MPI
         bool mpi_initialized_;
         MPI_Comm comm_ = MPI_COMM_WORLD;
