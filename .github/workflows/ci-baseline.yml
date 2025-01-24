@@ -47,7 +47,7 @@ jobs:
 
       - name: Prepare environment
         run: |
-          sed -i -e '$alocalhost slots=$num_cpus' /etc/openmpi/openmpi-default-hostfile
+          echo "localhost slots=$num_cpus" | tee -a /etc/openmpi/openmpi-default-hostfile
 
       - name: Configure
         run: |
