@@ -1,4 +1,4 @@
-name: github-Linux-baseline
+name: Build and Test (Ubuntu)
 
 on:
   pull_request:

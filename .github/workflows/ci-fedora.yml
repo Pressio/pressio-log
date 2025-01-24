@@ -1,4 +1,4 @@
-name: github-Linux-baseline
+name: Build and Test (Fedora)
 
 on:
   pull_request:
@@ -47,12 +47,21 @@ jobs:
         run: |
           echo "localhost slots=$num_cpus" | tee -a /usr/lib64/openmpi-default-hostfile
 
+      - name: Set MPI environment variables
+        run: |
+          export PATH=/usr/lib64/openmpi/bin:$PATH
+          export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH
+          export MPI_CXX=/usr/lib64/openmpi/bin/mpicxx
+          export MPI_CC=/usr/lib64/openmpi/bin/mpicc
+
       - name: Configure
         run: |
           cmake -B build \
                 -D CMAKE_BUILD_TYPE=Debug \
-                -D CMAKE_PREFIX_PATH=/usr/lib64 \
                 -D CMAKE_CXX_FLAGS="-Werror" \
+                -D CMAKE_CXX_COMPILER=${MPI_CXX} \
+                -D MPI_C_COMPILER=${MPI_CC} \
+                -D MPI_CXX_COMPILER=${MPI_CXX} \
                 ${{ matrix.cmake_extra_args }}
 
       - name: Build
