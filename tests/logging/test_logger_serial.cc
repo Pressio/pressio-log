@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
 #include "helpers.hpp"
+#include "LoggerTest.hpp"
 #include "pressio-log/core.hpp"
 
 void runTest(pressiolog::LogLevel level) {
-    CoutRedirector redirect;
-
     PRESSIOLOG_SET_LEVEL(level);
-    PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo::console);
+
+    CoutRedirector redirect;
 
     PRESSIOLOG_BASIC("Basic");
     PRESSIOLOG_INFO("Info");
@@ -20,22 +20,22 @@ void runTest(pressiolog::LogLevel level) {
     EXPECT_TRUE(check_output(output, "Basic",   level >= pressiolog::LogLevel::basic));
     EXPECT_TRUE(check_output(output, "Info",    level >= pressiolog::LogLevel::info));
     EXPECT_TRUE(check_output(output, "Debug",   level >= pressiolog::LogLevel::debug));
-    EXPECT_TRUE(check_output(output, "Warning", level >= pressiolog::LogLevel::basic));
-    EXPECT_TRUE(check_output(output, "Error",   level >= pressiolog::LogLevel::none));
+    EXPECT_TRUE(check_output(output, "Warning", level >= pressiolog::LogLevel::info));
+    EXPECT_TRUE(check_output(output, "Error",   level >= pressiolog::LogLevel::info));
 }
 
-TEST(SerialLoggerTest, NoLogging) {
+TEST_F(LoggerTest, Serial_LogLevel_None) {
     runTest(pressiolog::LogLevel::none);
 }
 
-TEST(SerialLoggerTest, BasicLogLevel) {
+TEST_F(LoggerTest, Serial_LogLevel_Basic) {
     runTest(pressiolog::LogLevel::basic);
 }
 
-TEST(SerialLoggerTest, InfoLogLevel) {
+TEST_F(LoggerTest, Serial_LogLevel_Info) {
     runTest(pressiolog::LogLevel::info);
 }
 
-TEST(SerialLoggerTest, DebugLogLevel) {
+TEST_F(LoggerTest, Serial_LogLevel_Debug) {
     runTest(pressiolog::LogLevel::debug);
 }

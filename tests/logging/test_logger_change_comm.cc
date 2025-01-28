@@ -3,7 +3,12 @@
 #include <mpi.h>
 
 #include "helpers.hpp"
+#include "LoggerTest.hpp"
 #include "pressio-log/core.hpp"
+
+bool condition(int exp_rank, int act_rank, int color) {
+    return (exp_rank == act_rank) and (color == 0);
+}
 
 void runTest() {
     int orig_rank, orig_size;
@@ -26,23 +31,27 @@ void runTest() {
     EXPECT_LT(size, orig_size);
 
     PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::debug);
-    PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo::console);
+    PRESSIOLOG_SET_COMMUNICATOR(new_comm);
 
-    // Check that new comm is being used (nothing should print on too-high rank)
-    CoutRedirector empty_redirect;
-    PRESSIOLOG_DEBUG("Should be empty", orig_size - 1, new_comm);
-    std::string empty_output = empty_redirect.str();
-    EXPECT_TRUE(check_output(empty_output, "Should be empty", false));
+    {
+        // Check that new comm is being used (warning should print on too-high rank)
+        CoutRedirector invalid_redirect;
+        PRESSIOLOG_DEBUG("Invalid rank", orig_size - 1);
+        std::string invalid_output = invalid_redirect.str();
+        EXPECT_TRUE(check_output(invalid_output, "WARNING", true));
+    }
 
-    // Check that new comm works properly
-    CoutRedirector redirect;
-    PRESSIOLOG_INFO("Info", 1)
-    PRESSIOLOG_DEBUG("Debug");
-    std::string output = redirect.str();
-    EXPECT_TRUE(check_output(output, "[1] Info",  rank == 1));
-    EXPECT_TRUE(check_output(output, "[0] Debug", rank == 0));
+    {
+        // Check that new comm works properly
+        CoutRedirector redirect;
+        PRESSIOLOG_INFO("Info", 0)
+        PRESSIOLOG_DEBUG("Debug");
+        std::string output = redirect.str();
+        EXPECT_TRUE(check_output(output, "[0] Info",  condition(0, rank, color)));
+        EXPECT_TRUE(check_output(output, "[0] Debug", condition(0, rank, color)));
+    }
 }
 
-TEST(ParallelLoggerTest, ChangeCommunicator) {
+TEST_F(LoggerTest, Parallel_ChangeCommunicator) {
     runTest();
 }

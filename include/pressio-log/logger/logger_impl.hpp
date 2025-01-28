@@ -57,10 +57,50 @@
 namespace pressiolog {
 
 ///////////////////////////////////////////////////////////////////////////////
+// Initialization and finalization
+
+void Logger::initialize(
+    LogLevel level, LogTo destination, const std::string& filename) {
+    std::call_once(init_flag_, [&]() {
+        setLoggingLevel(level);
+        setOutputStream(destination);
+        setOutputFilename(filename);
+        formatRankString_();
+        logger_is_initialized_.store(true, std::memory_order_release);
+        info_("pressio-log initialized.");
+    });
+}
+
+#if PRESSIOLOG_ENABLE_MPI
+void Logger::initializeWithMPI(
+    LogLevel level, LogTo destination, const std::string& filename,
+    int logging_rank, MPI_Comm comm) {
+    // Check if MPI is initialized
+    int flag = 0; MPI_Initialized( &flag );
+    mpi_initialized_ = flag == 1 ? true : false;
+    if (mpi_initialized_) {
+        updateCurrentRank_();
+    }
+    // Set member variables and initialize
+    setLoggingRank_(logging_rank);
+    setCommunicator(comm);
+    initialize(level, destination, filename);
+}
+#endif
+
+void Logger::finalize() {
+    assertLoggerIsInitialized_();
+    // No op for now
+    info_("pressio-log finalized.");
+    return;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Public logging functions
 
-void Logger::log(LogLevel level, const std::string& message, int target_rank) {
-    if (current_rank_ == target_rank) {
+void Logger::log(LogLevel level, const std::string& message) {
+    assertLoggerIsInitialized_();
+    if (current_rank_ == logging_rank_) {
         switch (level) {
             case LogLevel::none:    return;
             case LogLevel::basic:   basic_(message);   break;
@@ -73,12 +113,10 @@ void Logger::log(LogLevel level, const std::string& message, int target_rank) {
 }
 
 #if PRESSIOLOG_ENABLE_MPI
-void Logger::log(LogLevel level, const std::string& message, int target_rank, MPI_Comm comm) {
-    if (mpi_initialized_) {
-        setComm_(comm);
-        updateCurrentRank_();
-    }
-    log(level, message, target_rank);
+void Logger::log(LogLevel level, const std::string& message, int logging_rank) {
+    assertLoggerIsInitialized_();
+    setLoggingRank_(logging_rank);
+    log(level, message);
 }
 #endif
 
@@ -86,7 +124,7 @@ void Logger::log(LogLevel level, const std::string& message, int target_rank, MP
 // Public setters (for testing)
 
 void Logger::setLoggingLevel(LogLevel level) {
-    current_level_ = level;
+    logging_level_ = level;
 }
 
 void Logger::setOutputStream(LogTo destination) {
@@ -94,57 +132,68 @@ void Logger::setOutputStream(LogTo destination) {
     setDestinationBools_();
 }
 
+void Logger::setOutputFilename(const std::string& log_file_name) {
+    log_file_ = log_file_name;
+}
+
+#if PRESSIOLOG_ENABLE_MPI
+void Logger::setCommunicator(MPI_Comm comm) {
+    comm_ = comm;
+}
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 // Private constructor
 
-Logger::Logger() : current_rank_(0) {
-    #if PRESSIOLOG_ENABLE_MPI
-    int flag = 0; MPI_Initialized( &flag );
-    mpi_initialized_ = flag == 1 ? true : false;
-    if (mpi_initialized_) {
-        updateCurrentRank_();
+Logger::Logger() : logger_is_initialized_(false) {}
+
+///////////////////////////////////////////////////////////////////////////////
+// Check initialization
+
+void Logger::assertLoggerIsInitialized_() {
+    if (logger_is_initialized_) {
+        return;
+    } else {
+        // throw some error
+        return;
     }
-    #endif
-    formatRankString_();
-    resetLoggingLevel_();
-    setDestination_();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // MPI helpers
 
 #if PRESSIOLOG_ENABLE_MPI
-void Logger::setComm_(MPI_Comm comm) {
-    comm_ = comm;
-}
-
 void Logger::updateCurrentRank_() {
     if (mpi_initialized_) {
         MPI_Comm_rank(comm_, &current_rank_);
     }
     formatRankString_();
 }
+
+void Logger::setLoggingRank_(int rank) {
+    if (mpi_initialized_) {
+        int size;
+        MPI_Comm_size(comm_, &size);
+        if (rank > size - 1) {
+            warning_("Cannot target rank " + std::to_string(rank) + \
+                     " (current communicator size is " + std::to_string(size) + ").");
+        } else {
+            logging_rank_ = rank;
+        }
+    } else {
+        warning_("Cannot set target rank (MPI is not initialized).");
+    }
+}
+
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // Private setters
 
-void Logger::resetLoggingLevel_() {
-    #ifdef PRESSIOLOG_LOG_LEVEL
-    setLoggingLevel(static_cast<LogLevel>(PRESSIOLOG_LOG_LEVEL));
-    #else
-    setLoggingLevel(LogLevel::basic);
-    #endif
+void Logger::setInitialized_() {
+    logger_is_initialized_ = true;
 }
-void Logger::setDestination_() {
-    auto writeFile = false;
-    #ifdef PRESSIOLOG_OUTPUT
-    dst_ = static_cast<LogTo>(PRESSIOLOG_OUTPUT);
-    #else
-    dst_ = LogTo::console;
-    #endif
-    setDestinationBools_();
-}
+
 void Logger::setDestinationBools_() {
     should_write_ = (dst_ >= LogTo::file) ? true : false;
     should_log_   = (dst_ == LogTo::console or dst_ == LogTo::both) ? true : false;
@@ -167,29 +216,31 @@ std::string Logger::formatError_(const std::string& message) const {
 // Internal logging functions
 
 void Logger::basic_(const std::string& message) {
-    if (current_level_ >= LogLevel::basic) {
+    if (logging_level_ >= LogLevel::basic) {
         log_(message);
     }
 }
 void Logger::info_(const std::string& message) {
-    if (current_level_ >= LogLevel::info) {
+    if (logging_level_ >= LogLevel::info) {
         log_(message);
     }
 }
 void Logger::debug_(const std::string& message) {
-    if (current_level_ >= LogLevel::debug) {
+    if (logging_level_ >= LogLevel::debug) {
         log_(message);
     }
 }
 void Logger::warning_(const std::string& message) {
     #if not PRESSIOLOG_SILENCE_WARNINGS
-    if (current_level_ >= LogLevel::basic) {
+    if (logging_level_ >= LogLevel::info) {
         log_(formatWarning_(message));
     }
     #endif
 }
 void Logger::error_(const std::string& message) {
-    log_(formatError_(message));
+    if (logging_level_ >= LogLevel::info) {
+        log_(formatError_(message));
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

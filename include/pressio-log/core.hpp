@@ -62,12 +62,34 @@
 #define PRESSIOLOG_WARNING(...) LOG(pressiolog::LogLevel::warning, __VA_ARGS__)
 #define PRESSIOLOG_ERROR(...)   LOG(pressiolog::LogLevel::error, __VA_ARGS__)
 
-// Macros for testing
+// Initialization/Finalization
+
+#if PRESSIOLOG_ENABLE_MPI
+    #define PRESSIOLOG_INITIALIZE(...) \
+        pressiolog::Logger::PressioLogger()->initializeWithMPI(__VA_ARGS__)
+#else
+    #define PRESSIOLOG_INITIALIZE(...) \
+        pressiolog::Logger::PressioLogger()->initialize(__VA_ARGS__)
+#endif
+
+
+#define PRESSIOLOG_FINALIZE(...) \
+    pressiolog::Logger::PressioLogger()->finalize(__VA_ARGS__);
+
+// Setters
 
 #define PRESSIOLOG_SET_LEVEL(...) \
     pressiolog::Logger::PressioLogger()->setLoggingLevel(__VA_ARGS__);
 
 #define PRESSIOLOG_SET_OUTPUT_STREAM(...) \
     pressiolog::Logger::PressioLogger()->setOutputStream(__VA_ARGS__);
+
+#define PRESSIOLOG_SET_OUTPUT_FILENAME(...) \
+    pressiolog::Logger::PressioLogger()->setOutputFilename(__VA_ARGS__);
+
+#if PRESSIOLOG_ENABLE_MPI
+#define PRESSIOLOG_SET_COMMUNICATOR(...) \
+    pressiolog::Logger::PressioLogger()->setCommunicator(__VA_ARGS__);
+#endif
 
 #endif // PRESSIOLOG_CORE_HPP

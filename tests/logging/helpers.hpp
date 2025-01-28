@@ -21,10 +21,12 @@ private:
     std::stringstream ss_;
 };
 
+// Helper test to assert that the output is present if the condition is true
 bool check_output(std::string output, std::string str, bool condition) {
     return condition == (output.find(str) != std::string::npos);
 }
 
+// Helper to read in a file and return the content as a string
 std::string read_file(std::string fileName) {
     std::ifstream file(fileName);
     if (!file) {

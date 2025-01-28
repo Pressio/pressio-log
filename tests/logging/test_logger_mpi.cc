@@ -3,6 +3,7 @@
 #include <mpi.h>
 
 #include "helpers.hpp"
+#include "LoggerTest.hpp"
 #include "pressio-log/core.hpp"
 
 using pressiolog::LogLevel;
@@ -12,6 +13,8 @@ bool condition(LogLevel logging_level, LogLevel tested_level, int target_rank, i
 }
 
 void runTest(LogLevel level) {
+    PRESSIOLOG_SET_LEVEL(level);
+
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -21,9 +24,6 @@ void runTest(LogLevel level) {
     }
 
     CoutRedirector redirect;
-
-    PRESSIOLOG_SET_LEVEL(level);
-    PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo::console);
 
     PRESSIOLOG_BASIC("Basic");
     PRESSIOLOG_INFO("Info", 0);
@@ -36,24 +36,24 @@ void runTest(LogLevel level) {
     EXPECT_TRUE(check_output(output, "[0] Basic",   condition(level, LogLevel::basic, 0, rank)));
     EXPECT_TRUE(check_output(output, "[0] Info",    condition(level, LogLevel::info,  0, rank)));
     EXPECT_TRUE(check_output(output, "[1] Debug",   condition(level, LogLevel::debug, 1, rank)));
-    EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::basic, 2, rank)));
-    EXPECT_TRUE(check_output(output, "[0] ERROR",   condition(level, LogLevel::none,  0, rank)));
+    EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::info,  2, rank)));
+    EXPECT_TRUE(check_output(output, "[2] ERROR",   condition(level, LogLevel::info,  2, rank)));
 
     MPI_Barrier(MPI_COMM_WORLD);
 }
 
-TEST(ParallelLoggerTest, NoLogging) {
+TEST_F(LoggerTest, Parallel_LogLevel_None) {
     runTest(LogLevel::none);
 }
 
-TEST(ParallelLoggerTest, BasicLogLevel) {
+TEST_F(LoggerTest, Parallel_LogLevel_Basic) {
     runTest(LogLevel::basic);
 }
 
-TEST(ParallelLoggerTest, InfoLogLevel) {
+TEST_F(LoggerTest, Parallel_LogLevel_Info) {
     runTest(LogLevel::info);
 }
 
-TEST(ParallelLoggerTest, DebugLogLevel) {
+TEST_F(LoggerTest, Parallel_LogLevel_Debug) {
     runTest(LogLevel::debug);
 }

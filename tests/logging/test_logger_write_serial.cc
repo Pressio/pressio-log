@@ -2,13 +2,14 @@
 #include <filesystem>
 
 #include "helpers.hpp"
+#include "LoggerTest.hpp"
 #include "pressio-log/core.hpp"
 
 void runTest(pressiolog::LogTo dst) {
-    CoutRedirector redirect;
-
     PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::debug);
     PRESSIOLOG_SET_OUTPUT_STREAM(dst);
+
+    CoutRedirector redirect;
 
     PRESSIOLOG_BASIC("Basic");
     PRESSIOLOG_INFO("Info");
@@ -42,14 +43,14 @@ void runTest(pressiolog::LogTo dst) {
     }
 }
 
-TEST(SerialLoggerTest, LogToConsole) {
+TEST_F(LoggerTest, Serial_LogTo_Console) {
     runTest(pressiolog::LogTo::console);
 }
 
-TEST(SerialLoggerTest, LogToFile) {
+TEST_F(LoggerTest, Serial_LogTo_File) {
     runTest(pressiolog::LogTo::file);
 }
 
-TEST(SerialLoggerTest, LogToBoth) {
+TEST_F(LoggerTest, Serial_LogTo_Both) {
     runTest(pressiolog::LogTo::both);
 }

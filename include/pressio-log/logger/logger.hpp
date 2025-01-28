@@ -50,6 +50,7 @@
 #define PRESSIOLOG_LOGGER_LOGGER_HPP_
 
 #include <mutex>
+#include <atomic>
 #include <vector>
 #include <memory>
 #include <filesystem>
@@ -62,8 +63,7 @@
 
 /*
  * TO DO:
- * - logging destinations (console, file, both)
- * - colorized output with fmt?
+ * - colorized output?
  */
 
 namespace pressiolog {
@@ -80,29 +80,52 @@ class Logger {
             return instance;
         }
 
-        // Public logging functions
-        void log(LogLevel level, const std::string& message, int target_rank=0);
+        // Initialization and finalization
+        void initialize(
+            LogLevel level = LogLevel::basic,
+            LogTo destination = LogTo::console,
+            const std::string& filename = "pressio.log"
+        );
         #if PRESSIOLOG_ENABLE_MPI
-        void log(LogLevel level, const std::string& message, int target_rank, MPI_Comm comm);
+        void initializeWithMPI(
+            LogLevel level = LogLevel::basic,
+            LogTo destination = LogTo::console,
+            const std::string& filename = "pressio.log",
+            int logging_rank = 0,
+            MPI_Comm comm = MPI_COMM_WORLD
+        );
+        #endif
+        void finalize();
+
+        // Public logging functions
+        void log(LogLevel level, const std::string& message);
+        #if PRESSIOLOG_ENABLE_MPI
+        void log(LogLevel level, const std::string& message, int logging_rank);
         #endif
 
-        // Public setters (for testing)
+        // Public setters
         void setLoggingLevel(LogLevel level);
         void setOutputStream(LogTo destination);
+        void setOutputFilename(const std::string& log_file_name);
+        #if PRESSIOLOG_ENABLE_MPI
+        void setCommunicator(MPI_Comm comm);
+        #endif
 
     private:
         // Private constructor
         Logger();
 
+        // Check initialization
+        void assertLoggerIsInitialized_();
+
         // MPI helpers
         #if PRESSIOLOG_ENABLE_MPI
-        void setComm_(MPI_Comm comm);
         void updateCurrentRank_();
+        void setLoggingRank_(int rank);
         #endif
 
         // Private setters
-        void resetLoggingLevel_();
-        void setDestination_();
+        void setInitialized_();
         void setDestinationBools_();
 
         // Formatting
@@ -122,19 +145,32 @@ class Logger {
         void print_(const std::string& message);
         void write_(const std::string& message);
 
+        ///////////////////////////////////////////////////////////////////////
         // Member variables
+
+        // General
         std::mutex mutex_;
-        LogLevel current_level_;
-        int current_rank_;
+        int current_rank_{0};
         std::string rank_str_;
 
-        LogTo dst_;
-        bool should_write_, should_log_;
-        const std::string log_file_ = "pressio.log";
+        // Initialization
+        std::atomic<bool> logger_is_initialized_;
+        std::once_flag init_flag_;
 
+        // Configuration
+        LogLevel logging_level_{LogLevel::basic};
+        int logging_rank_{0};
+
+        // Output
+        LogTo dst_{LogTo::console};
+        bool should_write_{false};
+        bool should_log_{true};
+        std::string log_file_{"pressio.log"};
+
+        // MPI
         #if PRESSIOLOG_ENABLE_MPI
-        bool mpi_initialized_;
-        MPI_Comm comm_ = MPI_COMM_WORLD;
+        bool mpi_initialized_{false};
+        MPI_Comm comm_{MPI_COMM_WORLD};
         #endif
 };
 
