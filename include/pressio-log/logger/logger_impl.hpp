@@ -82,7 +82,7 @@ void Logger::initializeWithMPI(
         updateCurrentRank_();
     }
     // Set member variables and initialize
-    setLoggingRank_(logging_rank);
+    setLoggingRank(logging_rank);
     setCommunicator(comm);
     initialize(level, destination, filename);
 }
@@ -90,7 +90,6 @@ void Logger::initializeWithMPI(
 
 void Logger::finalize() {
     assertLoggerIsInitialized_();
-    // No op for now
     info_("pressio-log finalized.");
     return;
 }
@@ -115,13 +114,13 @@ void Logger::log(LogLevel level, const std::string& message) {
 #if PRESSIOLOG_ENABLE_MPI
 void Logger::log(LogLevel level, const std::string& message, int logging_rank) {
     assertLoggerIsInitialized_();
-    setLoggingRank_(logging_rank);
+    if (logging_rank != logging_rank_) setLoggingRank(logging_rank);
     log(level, message);
 }
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
-// Public setters (for testing)
+// Public setters
 
 void Logger::setLoggingLevel(LogLevel level) {
     logging_level_ = level;
@@ -137,40 +136,7 @@ void Logger::setOutputFilename(const std::string& log_file_name) {
 }
 
 #if PRESSIOLOG_ENABLE_MPI
-void Logger::setCommunicator(MPI_Comm comm) {
-    comm_ = comm;
-}
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-// Private constructor
-
-Logger::Logger() : logger_is_initialized_(false) {}
-
-///////////////////////////////////////////////////////////////////////////////
-// Check initialization
-
-void Logger::assertLoggerIsInitialized_() {
-    if (logger_is_initialized_) {
-        return;
-    } else {
-        // throw some error
-        return;
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// MPI helpers
-
-#if PRESSIOLOG_ENABLE_MPI
-void Logger::updateCurrentRank_() {
-    if (mpi_initialized_) {
-        MPI_Comm_rank(comm_, &current_rank_);
-    }
-    formatRankString_();
-}
-
-void Logger::setLoggingRank_(int rank) {
+void Logger::setLoggingRank(int rank) {
     if (mpi_initialized_) {
         int size;
         MPI_Comm_size(comm_, &size);
@@ -184,7 +150,41 @@ void Logger::setLoggingRank_(int rank) {
         warning_("Cannot set target rank (MPI is not initialized).");
     }
 }
+void Logger::setCommunicator(MPI_Comm comm) {
+    comm_ = comm;
+}
+#endif
 
+///////////////////////////////////////////////////////////////////////////////
+// Private constructor
+
+Logger::Logger() : logger_is_initialized_(false) {
+    #if !PRESSIOLOG_ENABLED
+    initialize(LogLevel::none);
+    #endif
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Check initialization
+
+void Logger::assertLoggerIsInitialized_() {
+    if (!logger_is_initialized_) {
+        throw std::runtime_error(
+            "pressio-log has not been initialized. "
+            "Call PRESSIOLOG_INITIALIZE() before using.");
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// MPI helpers
+
+#if PRESSIOLOG_ENABLE_MPI
+void Logger::updateCurrentRank_() {
+    if (mpi_initialized_) {
+        MPI_Comm_rank(comm_, &current_rank_);
+    }
+    formatRankString_();
+}
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////

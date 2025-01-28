@@ -70,11 +70,15 @@ namespace pressiolog {
 
 class Logger {
     public:
-        // Delete copy and assignment ops
-        Logger(Logger &other) = delete;
-        void operator=(const Logger &) = delete;
-
-        // Return singleton instance of PressioLogger
+        /*
+         * Returns a shared pointer to the singleton instance of PressioLogger.
+         *
+         * The static variable `instance` is initialized only once (when it is first accessed).
+         * Since C++11, the initialization of "magic statics" is guaranteed to be thread safe.
+         *
+         * For more info on magic statics:
+         *     https://blog.mbedded.ninja/programming/languages/c-plus-plus/magic-statics/
+         */
         static std::shared_ptr<Logger> PressioLogger() {
             static std::shared_ptr<Logger> instance(new Logger());
             return instance;
@@ -108,6 +112,7 @@ class Logger {
         void setOutputStream(LogTo destination);
         void setOutputFilename(const std::string& log_file_name);
         #if PRESSIOLOG_ENABLE_MPI
+        void setLoggingRank(int rank);
         void setCommunicator(MPI_Comm comm);
         #endif
 
@@ -115,13 +120,18 @@ class Logger {
         // Private constructor
         Logger();
 
+        // Delete copy and move constructors
+        Logger(const Logger&) = delete;
+        Logger& operator=(const Logger&) = delete;
+        Logger(Logger&&) = delete;
+        Logger& operator=(Logger&&) = delete;
+
         // Check initialization
         void assertLoggerIsInitialized_();
 
         // MPI helpers
         #if PRESSIOLOG_ENABLE_MPI
         void updateCurrentRank_();
-        void setLoggingRank_(int rank);
         #endif
 
         // Private setters
