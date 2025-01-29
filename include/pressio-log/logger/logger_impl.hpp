@@ -52,6 +52,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "colors.hpp"
 #include "logger.hpp"
 
 namespace pressiolog {
@@ -206,10 +207,12 @@ void Logger::formatRankString_() {
     rank_str_ = "[" + std::to_string(current_rank_) + "] ";
 }
 std::string Logger::formatWarning_(const std::string& message) const {
-    return "WARNING: " + message;
+    // Colors only if PRESSIOLOG_COLORIZED_OUTPUT is enabled
+    return colors::yellow("WARNING: " + message);
 }
 std::string Logger::formatError_(const std::string& message) const {
-    return "ERROR: " + message;
+    // Colors only if PRESSIOLOG_COLORIZED_OUTPUT is enabled
+    return colors::red("ERROR: " + message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,13 @@ else ()
   add_compile_definitions(PRESSIOLOG_SILENCE_WARNINGS=0)
 endif()
 
+option(PRESSIO_COLORIZED_OUTPUT "Enable or disable colorized logging" OFF)
+if (PRESSIO_COLORIZED_OUTPUT)
+  add_compile_definitions(PRESSIOLOG_COLORIZED_OUTPUT=1)
+else ()
+  add_compile_definitions(PRESSIOLOG_COLORIZED_OUTPUT=0)
+endif()
+
 # install headers
 #=====================================================================
 include(GNUInstallDirs)
