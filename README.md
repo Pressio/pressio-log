@@ -18,7 +18,7 @@ git clone https://github.com/Pressio/pressio-log.git
 | `-D PRESSIO_ENABLE_LOGGING`   |           `ON`|
 | `-D PRESSIO_SILENCE_WARNINGS` |          `OFF`|
 | `-D PRESSIO_ENABLE_TPL_MPI`   |          `OFF`|
-
+| `-D PRESSIO_COLORIZED_OUTPUT` |          `OFF`|
 
 Sample build command:
 
