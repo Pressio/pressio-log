@@ -86,7 +86,7 @@ PRESSIOLOG_SET_COMMUNICATOR(MPI_Comm comm);
 At the end of your program, finalize the logger with
 
 ```cpp
-PRESSIOLOGGER_FINALIZE();
+PRESSIOLOG_FINALIZE();
 ```
 
 ## Sample Program
