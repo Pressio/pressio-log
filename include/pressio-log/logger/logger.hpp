@@ -61,11 +61,6 @@
 #include "loglevel.hpp"
 #include "logto.hpp"
 
-/*
- * TO DO:
- * - colorized output?
- */
-
 namespace pressiolog {
 
 class Logger {
@@ -101,11 +96,8 @@ class Logger {
         #endif
         void finalize();
 
-        // Public logging functions
+        // Public logging function
         void log(LogLevel level, const std::string& message);
-        #if PRESSIOLOG_ENABLE_MPI
-        void log(LogLevel level, const std::string& message, int logging_rank);
-        #endif
 
         // Public setters
         void setLoggingLevel(LogLevel level);

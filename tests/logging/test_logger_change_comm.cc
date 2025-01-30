@@ -36,7 +36,7 @@ void runTest() {
     {
         // Check that new comm is being used (warning should print on too-high rank)
         CoutRedirector invalid_redirect;
-        PRESSIOLOG_DEBUG("Invalid rank", orig_size - 1);
+        PRESSIOLOG_SET_LOGGING_RANK(orig_size - 1);
         std::string invalid_output = invalid_redirect.str();
         EXPECT_TRUE(check_output(invalid_output, "WARNING", true));
     }
@@ -44,10 +44,9 @@ void runTest() {
     {
         // Check that new comm works properly
         CoutRedirector redirect;
-        PRESSIOLOG_INFO("Info", 0)
+        PRESSIOLOG_SET_LOGGING_RANK(0);
         PRESSIOLOG_DEBUG("Debug");
         std::string output = redirect.str();
-        EXPECT_TRUE(check_output(output, "[0] Info",  condition(0, rank, color)));
         EXPECT_TRUE(check_output(output, "[0] Debug", condition(0, rank, color)));
     }
 }

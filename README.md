@@ -13,12 +13,12 @@ git clone https://github.com/Pressio/pressio-log.git
 
 2. **Configure** the logger via CMake
 
-| CMake Variable                | Default Value |
-| :---------------------------- | ------------: |
-| `-D PRESSIO_ENABLE_LOGGING`   |           `ON`|
-| `-D PRESSIO_SILENCE_WARNINGS` |          `OFF`|
-| `-D PRESSIO_ENABLE_TPL_MPI`   |          `OFF`|
-| `-D PRESSIO_COLORIZED_OUTPUT` |          `OFF`|
+| CMake Variable                       | Default Value |
+| :----------------------------------- | ------------: |
+| `-D PRESSIO_ENABLE_LOGGING`          |           `ON`|
+| `-D PRESSIO_SILENCE_WARNINGS`        |          `OFF`|
+| `-D PRESSIO_ENABLE_TPL_MPI`          |          `OFF`|
+| `-D PRESSIO_ENABLE_COLORIZED_OUTPUT` |          `OFF`|
 
 Sample build command:
 
@@ -74,8 +74,8 @@ Warnings and errors will print at the `info` and `debug` logging levels.
 All of the initialization parameters can also be overriden via macros:
 
 ```cpp
-PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::<none/basic/info/debug>);
-PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo::<console/file/both>);
+PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // none, basic, info, debug
+PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo dst);  // console, file, both
 PRESSIOLOG_SET_OUTPUT_FILENAME(std::string filename);
 PRESSIOLOG_SET_LOGGING_RANK(int rank);
 PRESSIOLOG_SET_COMMUNICATOR(MPI_Comm comm);

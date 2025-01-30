@@ -96,7 +96,7 @@ void Logger::finalize() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Public logging functions
+// Public logging function
 
 void Logger::log(LogLevel level, const std::string& message) {
     assertLoggerIsInitialized_();
@@ -111,14 +111,6 @@ void Logger::log(LogLevel level, const std::string& message) {
         }
     }
 }
-
-#if PRESSIOLOG_ENABLE_MPI
-void Logger::log(LogLevel level, const std::string& message, int logging_rank) {
-    assertLoggerIsInitialized_();
-    if (logging_rank != logging_rank_) setLoggingRank(logging_rank);
-    log(level, message);
-}
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 // Public setters
@@ -207,11 +199,11 @@ void Logger::formatRankString_() {
     rank_str_ = "[" + std::to_string(current_rank_) + "] ";
 }
 std::string Logger::formatWarning_(const std::string& message) const {
-    // Colors only if PRESSIOLOG_COLORIZED_OUTPUT is enabled
+    // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::yellow("WARNING: " + message);
 }
 std::string Logger::formatError_(const std::string& message) const {
-    // Colors only if PRESSIOLOG_COLORIZED_OUTPUT is enabled
+    // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::red("ERROR: " + message);
 }
 

@@ -54,7 +54,7 @@
 namespace pressiolog { namespace colors {
 
 std::string color(std::string str, std::string color_code) {
-    #if PRESSIOLOG_COLORIZED_OUTPUT
+    #if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT
     return "\033[" + color_code + "m" + str + "\033[0m";
     #endif
     return str;

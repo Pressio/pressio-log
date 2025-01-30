@@ -51,6 +51,7 @@
 
 #include "./logger/logger_impl.hpp"
 
+///////////////////////////////////////////////////////////////////////////////
 // Standard logging macros
 
 #define LOG(level, ...) \
@@ -62,6 +63,7 @@
 #define PRESSIOLOG_WARNING(...) LOG(pressiolog::LogLevel::warning, __VA_ARGS__)
 #define PRESSIOLOG_ERROR(...)   LOG(pressiolog::LogLevel::error, __VA_ARGS__)
 
+///////////////////////////////////////////////////////////////////////////////
 // Initialization/Finalization
 
 #if PRESSIOLOG_ENABLE_MPI
@@ -74,22 +76,28 @@
 
 
 #define PRESSIOLOG_FINALIZE(...) \
-    pressiolog::Logger::PressioLogger()->finalize(__VA_ARGS__);
+    pressiolog::Logger::PressioLogger()->finalize(__VA_ARGS__)
 
+///////////////////////////////////////////////////////////////////////////////
 // Setters
 
 #define PRESSIOLOG_SET_LEVEL(...) \
-    pressiolog::Logger::PressioLogger()->setLoggingLevel(__VA_ARGS__);
+    pressiolog::Logger::PressioLogger()->setLoggingLevel(__VA_ARGS__)
 
 #define PRESSIOLOG_SET_OUTPUT_STREAM(...) \
-    pressiolog::Logger::PressioLogger()->setOutputStream(__VA_ARGS__);
+    pressiolog::Logger::PressioLogger()->setOutputStream(__VA_ARGS__)
 
 #define PRESSIOLOG_SET_OUTPUT_FILENAME(...) \
-    pressiolog::Logger::PressioLogger()->setOutputFilename(__VA_ARGS__);
+    pressiolog::Logger::PressioLogger()->setOutputFilename(__VA_ARGS__)
 
 #if PRESSIOLOG_ENABLE_MPI
+
+#define PRESSIOLOG_SET_LOGGING_RANK(...) \
+    pressiolog::Logger::PressioLogger()->setLoggingRank(__VA_ARGS__)
+
 #define PRESSIOLOG_SET_COMMUNICATOR(...) \
-    pressiolog::Logger::PressioLogger()->setCommunicator(__VA_ARGS__);
-#endif
+    pressiolog::Logger::PressioLogger()->setCommunicator(__VA_ARGS__)
+
+#endif // PRESSIOLOG_ENABLE_MPI
 
 #endif // PRESSIOLOG_CORE_HPP

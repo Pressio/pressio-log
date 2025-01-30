@@ -27,10 +27,14 @@ void runTest(pressiolog::LogTo dst) {
     CoutRedirector redirect;
 
     PRESSIOLOG_BASIC("Basic");
-    PRESSIOLOG_INFO("Info", 0);
-    PRESSIOLOG_DEBUG("Debug", 1);
-    PRESSIOLOG_WARNING("foo", 2);   // will be prefixed by "WARNING: "
-    PRESSIOLOG_ERROR("bar");        // will be prefixed by "ERROR: "
+    PRESSIOLOG_INFO("Info");
+
+    PRESSIOLOG_SET_LOGGING_RANK(1);
+    PRESSIOLOG_DEBUG("Debug");
+
+    PRESSIOLOG_SET_LOGGING_RANK(2);
+    PRESSIOLOG_WARNING("foo");   // will be prefixed by "WARNING: "
+    PRESSIOLOG_ERROR("bar");     // will be prefixed by "ERROR: "
 
     MPI_Barrier(MPI_COMM_WORLD);
 
