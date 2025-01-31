@@ -1,6 +1,15 @@
 set(CMAKE_CXX_STANDARD 17)
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18.0 FATAL_ERROR)
 project(pressio-log CXX)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(colors)
+
+# versioning
+#=====================================================================
+
+file(READ ${PROJECT_SOURCE_DIR}/VERSION PRESSIOLOG_VERSION_NUMBER)
+message("${Magenta}>> PRESSIO-LOG: version = ${PRESSIOLOG_VERSION_NUMBER} ${ColourReset}")
 
 # set logging macros
 #=====================================================================
@@ -35,13 +44,14 @@ install(
 
 # tests
 #=====================================================================
-# if(PRESSIO_ENABLE_TESTS)
-add_library(pressio-log INTERFACE)
+option(PRESSIOLOG_ENABLE_TESTS "Enable testing for pressio-log library" OFF)
+if(PRESSIOLOG_ENABLE_TESTS)
+  add_library(pressio-log INTERFACE)
 
-target_include_directories(
-    pressio-log INTERFACE
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-)
+  target_include_directories(
+      pressio-log INTERFACE
+      "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
 
-add_subdirectory(tests)
-# endif()
+  add_subdirectory(tests)
+endif()

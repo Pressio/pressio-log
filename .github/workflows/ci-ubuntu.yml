@@ -52,6 +52,7 @@ jobs:
           cmake -B build \
                 -D CMAKE_BUILD_TYPE=Debug \
                 -D CMAKE_CXX_FLAGS="-Werror" \
+                -D PRESSIOLOG_ENABLE_TESTS=ON \
                 ${{ matrix.cmake_extra_args }}
 
       - name: Build

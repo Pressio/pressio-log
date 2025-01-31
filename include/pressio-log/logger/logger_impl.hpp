@@ -72,7 +72,7 @@ void Logger::initialize(
     });
 }
 
-#if PRESSIOLOG_ENABLE_MPI
+#if PRESSIO_ENABLE_TPL_MPI
 void Logger::initializeWithMPI(
     LogLevel level, LogTo destination, const std::string& filename,
     int logging_rank, MPI_Comm comm) {
@@ -128,7 +128,7 @@ void Logger::setOutputFilename(const std::string& log_file_name) {
     log_file_ = log_file_name;
 }
 
-#if PRESSIOLOG_ENABLE_MPI
+#if PRESSIO_ENABLE_TPL_MPI
 void Logger::setLoggingRank(int rank) {
     if (mpi_initialized_) {
         int size;
@@ -171,7 +171,7 @@ void Logger::assertLoggerIsInitialized_() {
 ///////////////////////////////////////////////////////////////////////////////
 // MPI helpers
 
-#if PRESSIOLOG_ENABLE_MPI
+#if PRESSIO_ENABLE_TPL_MPI
 void Logger::updateCurrentRank_() {
     if (mpi_initialized_) {
         MPI_Comm_rank(comm_, &current_rank_);

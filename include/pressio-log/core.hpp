@@ -66,7 +66,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Initialization/Finalization
 
-#if PRESSIOLOG_ENABLE_MPI
+#if PRESSIO_ENABLE_TPL_MPI
     #define PRESSIOLOG_INITIALIZE(...) \
         pressiolog::Logger::PressioLogger()->initializeWithMPI(__VA_ARGS__)
 #else
@@ -90,7 +90,7 @@
 #define PRESSIOLOG_SET_OUTPUT_FILENAME(...) \
     pressiolog::Logger::PressioLogger()->setOutputFilename(__VA_ARGS__)
 
-#if PRESSIOLOG_ENABLE_MPI
+#if PRESSIO_ENABLE_TPL_MPI
 
 #define PRESSIOLOG_SET_LOGGING_RANK(...) \
     pressiolog::Logger::PressioLogger()->setLoggingRank(__VA_ARGS__)
@@ -98,6 +98,6 @@
 #define PRESSIOLOG_SET_COMMUNICATOR(...) \
     pressiolog::Logger::PressioLogger()->setCommunicator(__VA_ARGS__)
 
-#endif // PRESSIOLOG_ENABLE_MPI
+#endif // PRESSIO_ENABLE_TPL_MPI
 
 #endif // PRESSIOLOG_CORE_HPP

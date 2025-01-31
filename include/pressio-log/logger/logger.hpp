@@ -54,7 +54,7 @@
 #include <vector>
 #include <memory>
 #include <filesystem>
-#if PRESSIOLOG_ENABLE_MPI
+#if PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
 
@@ -85,7 +85,7 @@ class Logger {
             LogTo destination = LogTo::console,
             const std::string& filename = "pressio.log"
         );
-        #if PRESSIOLOG_ENABLE_MPI
+        #if PRESSIO_ENABLE_TPL_MPI
         void initializeWithMPI(
             LogLevel level = LogLevel::basic,
             LogTo destination = LogTo::console,
@@ -103,7 +103,7 @@ class Logger {
         void setLoggingLevel(LogLevel level);
         void setOutputStream(LogTo destination);
         void setOutputFilename(const std::string& log_file_name);
-        #if PRESSIOLOG_ENABLE_MPI
+        #if PRESSIO_ENABLE_TPL_MPI
         void setLoggingRank(int rank);
         void setCommunicator(MPI_Comm comm);
         #endif
@@ -122,7 +122,7 @@ class Logger {
         void assertLoggerIsInitialized_();
 
         // MPI helpers
-        #if PRESSIOLOG_ENABLE_MPI
+        #if PRESSIO_ENABLE_TPL_MPI
         void updateCurrentRank_();
         #endif
 
@@ -170,7 +170,7 @@ class Logger {
         std::string log_file_{"pressio.log"};
 
         // MPI
-        #if PRESSIOLOG_ENABLE_MPI
+        #if PRESSIO_ENABLE_TPL_MPI
         bool mpi_initialized_{false};
         MPI_Comm comm_{MPI_COMM_WORLD};
         #endif
