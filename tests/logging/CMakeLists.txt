@@ -4,6 +4,11 @@ add_utest_serial(
 )
 
 add_utest_serial(
+  test_logger_multiple_args
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_logger_multiple_args.cc
+)
+
+add_utest_serial(
   test_logger_write_serial
   ${CMAKE_CURRENT_SOURCE_DIR}/test_logger_write_serial.cc
 )

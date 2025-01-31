@@ -97,7 +97,8 @@ class Logger {
         void finalize();
 
         // Public logging function
-        void log(LogLevel level, const std::string& message);
+        template <typename... Args>
+        void log(LogLevel level, const Args&... msgs);
 
         // Public setters
         void setLoggingLevel(LogLevel level);

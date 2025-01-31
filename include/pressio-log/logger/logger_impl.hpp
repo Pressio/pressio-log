@@ -96,10 +96,14 @@ void Logger::finalize() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Public logging function
+// Public logging functions
 
-void Logger::log(LogLevel level, const std::string& message) {
+template <typename... Args>
+void Logger::log(LogLevel level, const Args&... msgs) {
     assertLoggerIsInitialized_();
+    std::ostringstream oss;
+    ((oss << msgs << " "), ...);
+    auto message = oss.str();
     if (current_rank_ == logging_rank_) {
         switch (level) {
             case LogLevel::none:    return;
@@ -198,10 +202,12 @@ void Logger::setDestinationBools_() {
 void Logger::formatRankString_() {
     rank_str_ = "[" + std::to_string(current_rank_) + "] ";
 }
+
 std::string Logger::formatWarning_(const std::string& message) const {
     // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::yellow("WARNING: " + message);
 }
+
 std::string Logger::formatError_(const std::string& message) const {
     // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::red("ERROR: " + message);
