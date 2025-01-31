@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - fedora-clang-17
-          - fedora-gnu-13
+          - fedora-clang17
+          - fedora-gnu13
         cmake_extra_args:
           - ''
 

@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - ubuntu-clang-mpi-14
-          - ubuntu-gnu-mpi-11
+          - ubuntu-clang14-mpi
+          - ubuntu-gnu11-mpi
         cmake_extra_args:
           - ''
           - '-D PRESSIO_ENABLE_TPL_MPI=ON'
