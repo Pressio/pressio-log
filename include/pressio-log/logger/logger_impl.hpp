@@ -147,7 +147,7 @@ inline void Logger::setLoggingRank(int rank) {
         warning_("Cannot set target rank (MPI is not initialized).");
     }
 }
-void Logger::setCommunicator(MPI_Comm comm) {
+inline void Logger::setCommunicator(MPI_Comm comm) {
     comm_ = comm;
 }
 #endif
@@ -258,9 +258,11 @@ inline void Logger::print_(const std::string& message) {
     std::cout << message << std::endl;
 }
 
-// TO DO: Opening/closing every time is inefficient,
-//        but we need to determine an exit signal if
-//        if we want to only close at the end.
+// TO DO: Opening/closing every time is inefficient.
+//        We could open on INITIALIZE() and close on
+//        FINALIZE(), but we would also want to
+//        periodically but that could lead to problems
+//        if the run terminates early.
 inline void Logger::write_(const std::string& message) {
     std::ofstream file;
     file.open(log_file_, std::ios::app);
