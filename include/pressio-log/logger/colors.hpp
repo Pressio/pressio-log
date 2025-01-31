@@ -53,22 +53,22 @@
 
 namespace pressiolog { namespace colors {
 
-std::string color(std::string str, std::string color_code) {
+inline std::string color(std::string str, std::string color_code) {
     #if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT
     return "\033[" + color_code + "m" + str + "\033[0m";
     #endif
     return str;
 }
 
-std::string green(std::string str) {
+inline std::string green(std::string str) {
     return color(str, "32");
 }
 
-std::string red(std::string str) {
+inline std::string red(std::string str) {
     return color(str, "31");
 }
 
-std::string yellow(std::string str) {
+inline std::string yellow(std::string str) {
     return color(str, "33");
 }
 

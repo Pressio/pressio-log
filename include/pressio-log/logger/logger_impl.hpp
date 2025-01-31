@@ -60,7 +60,7 @@ namespace pressiolog {
 ///////////////////////////////////////////////////////////////////////////////
 // Initialization and finalization
 
-void Logger::initialize(
+inline void Logger::initialize(
     LogLevel level, LogTo destination, const std::string& filename) {
     std::call_once(init_flag_, [&]() {
         setLoggingLevel(level);
@@ -73,7 +73,7 @@ void Logger::initialize(
 }
 
 #if PRESSIO_ENABLE_TPL_MPI
-void Logger::initializeWithMPI(
+inline void Logger::initializeWithMPI(
     LogLevel level, LogTo destination, const std::string& filename,
     int logging_rank, MPI_Comm comm) {
     // Check if MPI is initialized
@@ -89,7 +89,7 @@ void Logger::initializeWithMPI(
 }
 #endif
 
-void Logger::finalize() {
+inline void Logger::finalize() {
     assertLoggerIsInitialized_();
     info_("pressio-log finalized.");
     return;
@@ -99,7 +99,7 @@ void Logger::finalize() {
 // Public logging functions
 
 template <typename... Args>
-void Logger::log(LogLevel level, const Args&... msgs) {
+inline void Logger::log(LogLevel level, const Args&... msgs) {
     assertLoggerIsInitialized_();
     std::ostringstream oss;
     ((oss << msgs << " "), ...);
@@ -119,21 +119,21 @@ void Logger::log(LogLevel level, const Args&... msgs) {
 ///////////////////////////////////////////////////////////////////////////////
 // Public setters
 
-void Logger::setLoggingLevel(LogLevel level) {
+inline void Logger::setLoggingLevel(LogLevel level) {
     logging_level_ = level;
 }
 
-void Logger::setOutputStream(LogTo destination) {
+inline void Logger::setOutputStream(LogTo destination) {
     dst_ = destination;
     setDestinationBools_();
 }
 
-void Logger::setOutputFilename(const std::string& log_file_name) {
+inline void Logger::setOutputFilename(const std::string& log_file_name) {
     log_file_ = log_file_name;
 }
 
 #if PRESSIO_ENABLE_TPL_MPI
-void Logger::setLoggingRank(int rank) {
+inline void Logger::setLoggingRank(int rank) {
     if (mpi_initialized_) {
         int size;
         MPI_Comm_size(comm_, &size);
@@ -155,7 +155,7 @@ void Logger::setCommunicator(MPI_Comm comm) {
 ///////////////////////////////////////////////////////////////////////////////
 // Private constructor
 
-Logger::Logger() : logger_is_initialized_(false) {
+inline Logger::Logger() : logger_is_initialized_(false) {
     #if !PRESSIOLOG_ENABLED
     initialize(LogLevel::none);
     #endif
@@ -164,7 +164,7 @@ Logger::Logger() : logger_is_initialized_(false) {
 ///////////////////////////////////////////////////////////////////////////////
 // Check initialization
 
-void Logger::assertLoggerIsInitialized_() {
+inline void Logger::assertLoggerIsInitialized_() {
     if (!logger_is_initialized_) {
         throw std::runtime_error(
             "pressio-log has not been initialized. "
@@ -176,7 +176,7 @@ void Logger::assertLoggerIsInitialized_() {
 // MPI helpers
 
 #if PRESSIO_ENABLE_TPL_MPI
-void Logger::updateCurrentRank_() {
+inline void Logger::updateCurrentRank_() {
     if (mpi_initialized_) {
         MPI_Comm_rank(comm_, &current_rank_);
     }
@@ -187,11 +187,11 @@ void Logger::updateCurrentRank_() {
 ///////////////////////////////////////////////////////////////////////////////
 // Private setters
 
-void Logger::setInitialized_() {
+inline void Logger::setInitialized_() {
     logger_is_initialized_ = true;
 }
 
-void Logger::setDestinationBools_() {
+inline void Logger::setDestinationBools_() {
     should_write_ = (dst_ >= LogTo::file) ? true : false;
     should_log_   = (dst_ == LogTo::console or dst_ == LogTo::both) ? true : false;
 }
@@ -199,16 +199,16 @@ void Logger::setDestinationBools_() {
 ///////////////////////////////////////////////////////////////////////////////
 // Formatting
 
-void Logger::formatRankString_() {
+inline void Logger::formatRankString_() {
     rank_str_ = "[" + std::to_string(current_rank_) + "] ";
 }
 
-std::string Logger::formatWarning_(const std::string& message) const {
+inline std::string Logger::formatWarning_(const std::string& message) const {
     // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::yellow("WARNING: " + message);
 }
 
-std::string Logger::formatError_(const std::string& message) const {
+inline std::string Logger::formatError_(const std::string& message) const {
     // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::red("ERROR: " + message);
 }
@@ -216,29 +216,29 @@ std::string Logger::formatError_(const std::string& message) const {
 ///////////////////////////////////////////////////////////////////////////////
 // Internal logging functions
 
-void Logger::basic_(const std::string& message) {
+inline void Logger::basic_(const std::string& message) {
     if (logging_level_ >= LogLevel::basic) {
         log_(message);
     }
 }
-void Logger::info_(const std::string& message) {
+inline void Logger::info_(const std::string& message) {
     if (logging_level_ >= LogLevel::info) {
         log_(message);
     }
 }
-void Logger::debug_(const std::string& message) {
+inline void Logger::debug_(const std::string& message) {
     if (logging_level_ >= LogLevel::debug) {
         log_(message);
     }
 }
-void Logger::warning_(const std::string& message) {
+inline void Logger::warning_(const std::string& message) {
     #if not PRESSIOLOG_SILENCE_WARNINGS
     if (logging_level_ >= LogLevel::info) {
         log_(formatWarning_(message));
     }
     #endif
 }
-void Logger::error_(const std::string& message) {
+inline void Logger::error_(const std::string& message) {
     if (logging_level_ >= LogLevel::info) {
         log_(formatError_(message));
     }
@@ -247,21 +247,21 @@ void Logger::error_(const std::string& message) {
 ///////////////////////////////////////////////////////////////////////////////
 // Output Functions
 
-void Logger::log_(const std::string& message) {
+inline void Logger::log_(const std::string& message) {
     auto out_str = rank_str_ + message;
     std::lock_guard<std::mutex> lock(mutex_);
     if (should_log_)   print_(out_str);
     if (should_write_) write_(out_str);
 }
 
-void Logger::print_(const std::string& message) {
+inline void Logger::print_(const std::string& message) {
     std::cout << message << std::endl;
 }
 
 // TO DO: Opening/closing every time is inefficient,
 //        but we need to determine an exit signal if
 //        if we want to only close at the end.
-void Logger::write_(const std::string& message) {
+inline void Logger::write_(const std::string& message) {
     std::ofstream file;
     file.open(log_file_, std::ios::app);
     file << message << std::endl;
