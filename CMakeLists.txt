@@ -19,7 +19,7 @@ string(REGEX MATCH "define[ \t]+PRESSIOLOG_PATCH_VERSION[ \t]+([0-9]+)" _patch_v
 set(PRESSIOLOG_PATCH_VERSION "${CMAKE_MATCH_1}")
 
 set(PRESSIOLOG_VERSION_NUMBER ${PRESSIOLOG_MAJOR_VERSION}.${PRESSIOLOG_MINOR_VERSION}.${PRESSIOLOG_PATCH_VERSION})
-message("${Magenta}>> PRESSIO-OPS: version = ${PRESSIOLOG_VERSION_NUMBER} ${ColourReset}")
+message("${Magenta}>> PRESSIO-LOG: version = ${PRESSIOLOG_VERSION_NUMBER} ${ColourReset}")
 
 # set logging macros
 #=====================================================================
