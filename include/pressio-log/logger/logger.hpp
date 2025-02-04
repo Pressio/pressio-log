@@ -54,6 +54,9 @@
 #include <vector>
 #include <memory>
 #include <filesystem>
+
+#define FMT_HEADER_ONLY
+#include <fmt/core.h>
 #if PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
@@ -96,9 +99,10 @@ class Logger {
         #endif
         void finalize();
 
-        // Public logging function
+        // Public logging functions
+        void log(LogLevel level, const std::string& message);
         template <typename... Args>
-        void log(LogLevel level, const Args&... msgs);
+        void log(LogLevel level, fmt::format_string<Args...> fmt_str, Args&&... args);
 
         // Public setters
         void setLoggingLevel(LogLevel level);

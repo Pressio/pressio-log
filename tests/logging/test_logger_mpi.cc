@@ -23,7 +23,7 @@ void runTest(LogLevel level) {
         throw std::runtime_error("Test requires comm size >= 3");
     }
 
-    // CoutRedirector redirect;
+    CoutRedirector redirect;
 
     PRESSIOLOG_BASIC("Basic");
     PRESSIOLOG_INFO("Info");
@@ -35,13 +35,13 @@ void runTest(LogLevel level) {
     PRESSIOLOG_WARNING("foo");   // will be prefixed by "WARNING: "
     PRESSIOLOG_ERROR("bar");     // will be prefixed by "ERROR: "
 
-    // std::string output = redirect.str();
+    std::string output = redirect.str();
 
-    // EXPECT_TRUE(check_output(output, "[0] Basic",   condition(level, LogLevel::basic, 0, rank)));
-    // EXPECT_TRUE(check_output(output, "[0] Info",    condition(level, LogLevel::info,  0, rank)));
-    // EXPECT_TRUE(check_output(output, "[1] Debug",   condition(level, LogLevel::debug, 1, rank)));
-    // EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::info,  2, rank)));
-    // EXPECT_TRUE(check_output(output, "[2] ERROR",   condition(level, LogLevel::info,  2, rank)));
+    EXPECT_TRUE(check_output(output, "[0] Basic",   condition(level, LogLevel::basic, 0, rank)));
+    EXPECT_TRUE(check_output(output, "[0] Info",    condition(level, LogLevel::info,  0, rank)));
+    EXPECT_TRUE(check_output(output, "[1] Debug",   condition(level, LogLevel::debug, 1, rank)));
+    EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::info,  2, rank)));
+    EXPECT_TRUE(check_output(output, "[2] ERROR",   condition(level, LogLevel::info,  2, rank)));
 
     MPI_Barrier(MPI_COMM_WORLD);
 }

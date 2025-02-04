@@ -38,7 +38,8 @@ void runTest() {
         CoutRedirector invalid_redirect;
         PRESSIOLOG_SET_LOGGING_RANK(orig_size - 1);
         std::string invalid_output = invalid_redirect.str();
-        EXPECT_TRUE(check_output(invalid_output, "WARNING", true));
+        EXPECT_TRUE(check_output(invalid_output, "WARNING", condition(0, rank, color)))
+            << "Output: " << invalid_output;
     }
 
     {

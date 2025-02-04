@@ -44,6 +44,10 @@ else ()
   add_compile_definitions(PRESSIOLOG_ENABLE_COLORIZED_OUTPUT=0)
 endif()
 
+# add external libs (currently just header-only fmt)
+#=====================================================================
+add_subdirectory(lib)
+
 # install headers
 #=====================================================================
 include(GNUInstallDirs)
@@ -60,7 +64,7 @@ if(PRESSIOLOG_ENABLE_TESTS)
 
   target_include_directories(
       pressio-log INTERFACE
-      "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+      "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>;${CMAKE_CURRENT_SOURCE_DIR}/lib/fmt/include"
   )
 
   add_subdirectory(tests)

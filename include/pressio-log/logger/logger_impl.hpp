@@ -52,6 +52,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "utils.hpp"
 #include "colors.hpp"
 #include "logger.hpp"
 
@@ -68,7 +69,7 @@ inline void Logger::initialize(
         setOutputFilename(filename);
         formatRankString_();
         logger_is_initialized_.store(true, std::memory_order_release);
-        info_("pressio-log initialized.");
+        log(LogLevel::info, colors::green("pressio-log initialized."));
     });
 }
 
@@ -91,19 +92,16 @@ inline void Logger::initializeWithMPI(
 
 inline void Logger::finalize() {
     assertLoggerIsInitialized_();
-    info_("pressio-log finalized.");
+    log(LogLevel::info, colors::green("pressio-log finalized."));
     return;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Public logging functions
 
-template <typename... Args>
-inline void Logger::log(LogLevel level, const Args&... msgs) {
+inline void Logger::log(LogLevel level, const std::string& message) {
     assertLoggerIsInitialized_();
-    std::ostringstream oss;
-    ((oss << msgs << " "), ...);
-    auto message = oss.str();
+
     if (current_rank_ == logging_rank_) {
         switch (level) {
             case LogLevel::none:    return;
@@ -114,6 +112,11 @@ inline void Logger::log(LogLevel level, const Args&... msgs) {
             case LogLevel::error:   error_(message);   break;
         }
     }
+}
+template <typename... Args>
+inline void Logger::log(LogLevel level, fmt::format_string<Args...> fmt_str, Args&&... args) {
+    std::string message = fmt::format(fmt_str, utils::to_string(std::forward<Args>(args))...);
+    log(level, message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,14 +140,13 @@ inline void Logger::setLoggingRank(int rank) {
     if (mpi_initialized_) {
         int size;
         MPI_Comm_size(comm_, &size);
-        if (rank > size - 1) {
-            warning_("Cannot target rank " + std::to_string(rank) + \
-                     " (current communicator size is " + std::to_string(size) + ").");
+        if (rank > size - 1 and logger_is_initialized_) {
+            log(LogLevel::warning, "Cannot target rank {} (current comm size is {})", rank, size);
         } else {
             logging_rank_ = rank;
         }
-    } else {
-        warning_("Cannot set target rank (MPI is not initialized).");
+    } else if (logger_is_initialized_) {
+        log(LogLevel::warning, "MPI is enabled but not initialized. Using serial logger.");
     }
 }
 inline void Logger::setCommunicator(MPI_Comm comm) {
@@ -200,17 +202,17 @@ inline void Logger::setDestinationBools_() {
 // Formatting
 
 inline void Logger::formatRankString_() {
-    rank_str_ = "[" + std::to_string(current_rank_) + "] ";
+    rank_str_ = fmt::format("[{}] ", current_rank_);
 }
 
 inline std::string Logger::formatWarning_(const std::string& message) const {
     // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
-    return colors::yellow("WARNING: " + message);
+    return colors::yellow(fmt::format("WARNING: {}", message));
 }
 
 inline std::string Logger::formatError_(const std::string& message) const {
     // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
-    return colors::red("ERROR: " + message);
+    return colors::red(fmt::format("ERROR: {}", message));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
