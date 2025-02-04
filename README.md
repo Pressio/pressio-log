@@ -69,9 +69,17 @@ PRESSIOLOG_WARNING("message");
 PRESSIOLOG_ERROR("message");
 ```
 
-Warnings and errors will print at the `info` and `debug` logging levels.
+Below are **three** tips for use:
 
-All of the initialization parameters can also be overriden via macros:
+- `pressio-log` is equipped with the [`fmt` library](https://github.com/fmtlib/fmt), so formatted strings may be passed to any of the logging commands:
+
+```cpp
+PRESSIOLOG_INFO("Sample output: {}, {}", 1, 4.5);
+```
+
+- Warnings and errors will print at the `info` and `debug` logging levels.
+
+- All of the initialization parameters can be overriden via macros:
 
 ```cpp
 PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // none, basic, info, debug
@@ -99,14 +107,38 @@ int main() {
     PRESSIOLOG_INFO("Program information: ");
     bool success;
     for (int i; i < 10; i++) {
-        PRESSIOLOG_DEBUG("Iteration " + std::to_string(i))
+        PRESSIOLOG_DEBUG("Iteration {}", i)
         success = i == 9 ? true : false;
     }
     if (success) {
-        PRESSIOLOG_INFO("Process completed successfully");
+        PRESSIOLOG_INFO("Process completed successfully.");
     }
     PRESSIOLOG_FINALIZE();
     return 0;
+}
+
+```
+
+## Using With Pressio
+
+`Pressio` is written with `pressio-log` automatically included. Therefore, if you are install Pressio and include it in your own application, there is no need to also install or include `pressio-log`.
+
+Further, since `Pressio` uses `pressio-log` throughout its source code, you only need to initialize and finalize the logger. The rest of the logging will be handled by `Pressio`.
+
+The following example initializes the logger at level `info` to log to a file called `pressio_output.log`.
+
+In practice, this means that all solver output (level: `basic`) and critical program information (level: `info`) from Pressio will be written to that file. Any warnings or errors will also be logged, while all other output (level: `debug`) will be omitted.
+
+```cpp
+#include <pressio/...>
+
+int main() {
+    PRESSIOLOG_INITIALIZE(
+        pressiolog::LogLevel::info,
+        pressiolog::LogTo::file,
+        "pressio_output.log");
+    // pressio code here
+    PRESSIOLOG_FINALIZE();
 }
 
 ```
@@ -121,4 +153,4 @@ ctest -j <np>
 ```
 
 > [!NOTE]
-> All MPI tests require at least three ranks to run.
+> All MPI tests require at least three processors to run.
