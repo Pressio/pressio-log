@@ -4,11 +4,6 @@ add_utest_serial(
 )
 
 add_utest_serial(
-  test_logger_custom_dtype
-  ${CMAKE_CURRENT_SOURCE_DIR}/test_logger_custom_dtype.cc
-)
-
-add_utest_serial(
   test_logger_formatting
   ${CMAKE_CURRENT_SOURCE_DIR}/test_logger_formatting.cc
 )

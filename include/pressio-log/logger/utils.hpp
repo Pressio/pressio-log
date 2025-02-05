@@ -49,8 +49,8 @@
 #ifndef PRESSIOLOG_LOGGER_UTILS_HPP_
 #define PRESSIOLOG_LOGGER_UTILS_HPP_
 
-#define FMT_HEADER_ONLY
-#include <fmt/core.h>
+#include <pressio-log/fmt/fmt.h>
+
 #include <sstream>
 #include <type_traits>
 

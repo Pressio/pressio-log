@@ -21,10 +21,6 @@ set(PRESSIOLOG_PATCH_VERSION "${CMAKE_MATCH_1}")
 set(PRESSIOLOG_VERSION_NUMBER ${PRESSIOLOG_MAJOR_VERSION}.${PRESSIOLOG_MINOR_VERSION}.${PRESSIOLOG_PATCH_VERSION})
 message("${Magenta}>> PRESSIO-LOG: version = ${PRESSIOLOG_VERSION_NUMBER} ${ColourReset}")
 
-# add external libs (currently just header-only fmt)
-#=====================================================================
-add_subdirectory(lib)
-
 # install headers
 #=====================================================================
 include(GNUInstallDirs)

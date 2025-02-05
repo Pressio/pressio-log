@@ -55,8 +55,7 @@
 #include <memory>
 #include <filesystem>
 
-#define FMT_HEADER_ONLY
-#include <fmt/core.h>
+#include <pressio-log/fmt/fmt.h>
 #if PRESSIO_ENABLE_TPL_MPI
 #include <mpi.h>
 #endif
