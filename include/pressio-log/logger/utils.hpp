@@ -66,7 +66,7 @@ constexpr auto prep_for_fmt(T&& value)
 // If the argument is not formattable, convert to a string and return to the fmt::format call.
 // This is not ideal, since any formatting related to floats/exponents will be incompatible
 template <typename T>
-constexpr auto prep_for_fmt(T&& value)
+auto prep_for_fmt(T&& value)
     -> std::enable_if_t<!fmt::is_formattable<std::decay_t<T>>::value, std::string> {
     if constexpr (std::is_arithmetic_v<std::decay_t<T>>) {
         return std::to_string(value);
