@@ -21,29 +21,6 @@ set(PRESSIOLOG_PATCH_VERSION "${CMAKE_MATCH_1}")
 set(PRESSIOLOG_VERSION_NUMBER ${PRESSIOLOG_MAJOR_VERSION}.${PRESSIOLOG_MINOR_VERSION}.${PRESSIOLOG_PATCH_VERSION})
 message("${Magenta}>> PRESSIO-LOG: version = ${PRESSIOLOG_VERSION_NUMBER} ${ColourReset}")
 
-# set logging macros
-#=====================================================================
-option(PRESSIO_ENABLE_LOGGING "Enable or disable logging with pressio-log" ON)
-if (PRESSIO_ENABLE_LOGGING)
-  add_compile_definitions(PRESSIOLOG_ENABLED=1)
-else ()
-  add_compile_definitions(PRESSIOLOG_ENABLED=0)
-endif()
-
-option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
-if (PRESSIO_SILENCE_WARNINGS)
-  add_compile_definitions(PRESSIOLOG_SILENCE_WARNINGS=1)
-else ()
-  add_compile_definitions(PRESSIOLOG_SILENCE_WARNINGS=0)
-endif()
-
-option(PRESSIO_ENABLE_COLORIZED_OUTPUT "Enable or disable colorized logging" OFF)
-if (PRESSIO_ENABLE_COLORIZED_OUTPUT)
-  add_compile_definitions(PRESSIOLOG_ENABLE_COLORIZED_OUTPUT=1)
-else ()
-  add_compile_definitions(PRESSIOLOG_ENABLE_COLORIZED_OUTPUT=0)
-endif()
-
 # add external libs (currently just header-only fmt)
 #=====================================================================
 add_subdirectory(lib)

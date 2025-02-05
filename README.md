@@ -121,7 +121,7 @@ int main() {
 
 ## Using With Pressio
 
-`Pressio` is written with `pressio-log` automatically included. Therefore, if you are install Pressio and include it in your own application, there is no need to also install or include `pressio-log`.
+`Pressio` is written with `pressio-log` automatically included. Therefore, if you install Pressio and include it in your own application, there is no need to also install or include `pressio-log`.
 
 Further, since `Pressio` uses `pressio-log` throughout its source code, you only need to initialize and finalize the logger. The rest of the logging will be handled by `Pressio`.
 

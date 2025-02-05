@@ -1,3 +1,28 @@
+option(PRESSIO_ENABLE_LOGGING "Enable logging via pressio-log" ON)
+if (PRESSIO_ENABLE_LOGGING)
+  add_compile_definitions(PRESSIO_ENABLE_LOGGING=1)
+else()
+  add_compile_definitions(PRESSIO_ENABLE_LOGGING=0)
+endif()
+
+## ---------------------------------------------------------------
+
+option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
+if (PRESSIO_SILENCE_WARNINGS)
+  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=1)
+else ()
+  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=0)
+endif()
+
+option(PRESSIO_ENABLE_COLORIZED_OUTPUT "Enable or disable colorized logging" OFF)
+if (PRESSIO_ENABLE_COLORIZED_OUTPUT)
+  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=1)
+else ()
+  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=0)
+endif()
+
+## ---------------------------------------------------------------
+
 option(PRESSIO_ENABLE_TPL_MPI "Enable MPI" OFF)
 
 if(PRESSIO_ENABLE_TPL_MPI)

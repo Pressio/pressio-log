@@ -1,6 +1,5 @@
 project(FMT CXX)
 
-
 function(add_headers VAR)
 set(headers ${${VAR}})
 foreach (header ${ARGN})
@@ -18,8 +17,6 @@ add_library(fmt::fmt-header-only ALIAS fmt)  # Alias to fmt-header-only
 target_include_directories(fmt SYSTEM INTERFACE
 $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-
-message(STATUS "Installing header-only fmt in")
 
 install(
   DIRECTORY                include/fmt

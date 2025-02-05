@@ -113,10 +113,19 @@ inline void Logger::log(LogLevel level, const std::string& message) {
         }
     }
 }
+
 template <typename... Args>
 inline void Logger::log(LogLevel level, fmt::format_string<Args...> fmt_str, Args&&... args) {
-    std::string message = fmt::format(fmt_str, utils::to_string(std::forward<Args>(args))...);
-    log(level, message);
+    try {
+        std::string message = fmt::format(fmt_str, utils::prep_for_fmt(std::forward<Args>(args))...);
+        log(level, message);
+    } catch(const fmt::v11::format_error&) {
+        std::string fmt_string(fmt_str.get().data(), fmt_str.get().size());
+        std::ostringstream oss;
+        oss << "fmt could not format given string: " << fmt_string << " with args:\n";
+        ((oss << "  " << std::to_string(args) << "\n"), ...);
+        throw std::runtime_error(oss.str());
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -158,7 +167,7 @@ inline void Logger::setCommunicator(MPI_Comm comm) {
 // Private constructor
 
 inline Logger::Logger() : logger_is_initialized_(false) {
-    #if !PRESSIOLOG_ENABLED
+    #if !PRESSIO_ENABLE_LOGGING
     initialize(LogLevel::none);
     #endif
 }
@@ -202,16 +211,16 @@ inline void Logger::setDestinationBools_() {
 // Formatting
 
 inline void Logger::formatRankString_() {
-    rank_str_ = fmt::format("[{}] ", current_rank_);
+    rank_str_ = colors::green(fmt::format("[{}] ", current_rank_));
 }
 
 inline std::string Logger::formatWarning_(const std::string& message) const {
-    // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
+    // Colors only if PRESSIO_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::yellow(fmt::format("WARNING: {}", message));
 }
 
 inline std::string Logger::formatError_(const std::string& message) const {
-    // Colors only if PRESSIOLOG_ENABLE_COLORIZED_OUTPUT is enabled
+    // Colors only if PRESSIO_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::red(fmt::format("ERROR: {}", message));
 }
 
@@ -234,7 +243,7 @@ inline void Logger::debug_(const std::string& message) {
     }
 }
 inline void Logger::warning_(const std::string& message) {
-    #if not PRESSIOLOG_SILENCE_WARNINGS
+    #if not PRESSIO_SILENCE_WARNINGS
     if (logging_level_ >= LogLevel::info) {
         log_(formatWarning_(message));
     }
@@ -262,9 +271,8 @@ inline void Logger::print_(const std::string& message) {
 
 // TO DO: Opening/closing every time is inefficient.
 //        We could open on INITIALIZE() and close on
-//        FINALIZE(), but we would also want to
-//        periodically but that could lead to problems
-//        if the run terminates early.
+//        FINALIZE(), but we would also want to flush
+//        periodically in case the run terminates early.
 inline void Logger::write_(const std::string& message) {
     std::ofstream file;
     file.open(log_file_, std::ios::app);

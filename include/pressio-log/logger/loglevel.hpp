@@ -49,6 +49,8 @@
 #ifndef PRESSIOLOG_LOGGER_LOGLEVEL_HPP_
 #define PRESSIOLOG_LOGGER_LOGLEVEL_HPP_
 
+#include <iostream>
+
 namespace pressiolog {
 
 enum class LogLevel : int {
@@ -59,6 +61,18 @@ enum class LogLevel : int {
     warning,
     error
 };
+
+inline std::ostream& operator<<(std::ostream& os, LogLevel level) {
+    switch (level) {
+        case LogLevel::none:    return os << "none";
+        case LogLevel::basic:   return os << "basic";
+        case LogLevel::info:    return os << "info";
+        case LogLevel::debug:   return os << "debug";
+        case LogLevel::warning: return os << "warning";
+        case LogLevel::error:   return os << "error";
+        default:                return os << "unknown";
+    }
+}
 
 } // end namespace pressiolog
 
