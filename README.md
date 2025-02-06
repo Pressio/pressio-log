@@ -15,7 +15,6 @@ git clone https://github.com/Pressio/pressio-log.git
 
 | CMake Variable                       | Default Value |
 | :----------------------------------- | ------------: |
-| `-D PRESSIO_ENABLE_LOGGING`          |           `ON`|
 | `-D PRESSIO_SILENCE_WARNINGS`        |          `OFF`|
 | `-D PRESSIO_ENABLE_TPL_MPI`          |          `OFF`|
 | `-D PRESSIO_ENABLE_COLORIZED_OUTPUT` |          `OFF`|

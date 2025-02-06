@@ -1,11 +1,4 @@
-option(PRESSIO_ENABLE_LOGGING "Enable logging via pressio-log" ON)
-if (PRESSIO_ENABLE_LOGGING)
-  add_compile_definitions(PRESSIO_ENABLE_LOGGING=1)
-else()
-  add_compile_definitions(PRESSIO_ENABLE_LOGGING=0)
-endif()
-
-## ---------------------------------------------------------------
+# ---------------------------------------------------------------
 
 option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
 if (PRESSIO_SILENCE_WARNINGS)

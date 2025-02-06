@@ -91,7 +91,6 @@ inline void Logger::initializeWithMPI(
 #endif
 
 inline void Logger::finalize() {
-    assertLoggerIsInitialized_();
     log(LogLevel::info, colors::green("pressio-log finalized."));
     return;
 }
@@ -100,7 +99,7 @@ inline void Logger::finalize() {
 // Public logging functions
 
 inline void Logger::log(LogLevel level, const std::string& message) {
-    assertLoggerIsInitialized_();
+    if (!logger_is_initialized_) return;
 
     if (current_rank_ == logging_rank_) {
         switch (level) {
@@ -166,22 +165,7 @@ inline void Logger::setCommunicator(MPI_Comm comm) {
 ///////////////////////////////////////////////////////////////////////////////
 // Private constructor
 
-inline Logger::Logger() : logger_is_initialized_(false) {
-    #if !PRESSIO_ENABLE_LOGGING
-    initialize(LogLevel::none);
-    #endif
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Check initialization
-
-inline void Logger::assertLoggerIsInitialized_() {
-    if (!logger_is_initialized_) {
-        throw std::runtime_error(
-            "pressio-log has not been initialized. "
-            "Call PRESSIOLOG_INITIALIZE() before using.");
-    }
-}
+inline Logger::Logger() {}
 
 ///////////////////////////////////////////////////////////////////////////////
 // MPI helpers
@@ -215,12 +199,10 @@ inline void Logger::formatRankString_() {
 }
 
 inline std::string Logger::formatWarning_(const std::string& message) const {
-    // Colors only if PRESSIO_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::yellow(fmt::format("WARNING: {}", message));
 }
 
 inline std::string Logger::formatError_(const std::string& message) const {
-    // Colors only if PRESSIO_ENABLE_COLORIZED_OUTPUT is enabled
     return colors::red(fmt::format("ERROR: {}", message));
 }
 

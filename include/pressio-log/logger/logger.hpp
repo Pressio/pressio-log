@@ -160,11 +160,11 @@ class Logger {
         std::string rank_str_;
 
         // Initialization
-        std::atomic<bool> logger_is_initialized_;
+        std::atomic<bool> logger_is_initialized_{false};
         std::once_flag init_flag_;
 
         // Configuration
-        LogLevel logging_level_{LogLevel::basic};
+        LogLevel logging_level_{LogLevel::none};
         int logging_rank_{0};
 
         // Output
