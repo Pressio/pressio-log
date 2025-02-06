@@ -74,7 +74,6 @@
         pressiolog::Logger::PressioLogger()->initialize(__VA_ARGS__)
 #endif
 
-
 #define PRESSIOLOG_FINALIZE(...) \
     pressiolog::Logger::PressioLogger()->finalize(__VA_ARGS__)
 
@@ -92,11 +91,11 @@
 
 #if PRESSIO_ENABLE_TPL_MPI
 
-#define PRESSIOLOG_SET_LOGGING_RANK(...) \
-    pressiolog::Logger::PressioLogger()->setLoggingRank(__VA_ARGS__)
+    #define PRESSIOLOG_SET_LOGGING_RANK(...) \
+        pressiolog::Logger::PressioLogger()->setLoggingRank(__VA_ARGS__)
 
-#define PRESSIOLOG_SET_COMMUNICATOR(...) \
-    pressiolog::Logger::PressioLogger()->setCommunicator(__VA_ARGS__)
+    #define PRESSIOLOG_SET_COMMUNICATOR(...) \
+        pressiolog::Logger::PressioLogger()->setCommunicator(__VA_ARGS__)
 
 #endif // PRESSIO_ENABLE_TPL_MPI
 
