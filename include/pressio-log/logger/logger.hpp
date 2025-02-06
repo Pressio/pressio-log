@@ -73,7 +73,7 @@ class Logger {
          * The static variable `instance` is initialized only once (when it is first accessed).
          * Since C++11, the initialization of "magic statics" is guaranteed to be thread safe.
          *
-         * For more info on magic statics:
+         * For more info on "magic statics":
          *     https://blog.mbedded.ninja/programming/languages/c-plus-plus/magic-statics/
          */
         static std::shared_ptr<Logger> PressioLogger() {
@@ -162,6 +162,7 @@ class Logger {
         // Initialization
         std::atomic<bool> logger_is_initialized_{false};
         std::once_flag init_flag_;
+        std::once_flag init_warning_flag_;
 
         // Configuration
         LogLevel logging_level_{LogLevel::none};

@@ -99,7 +99,14 @@ inline void Logger::finalize() {
 // Public logging functions
 
 inline void Logger::log(LogLevel level, const std::string& message) {
-    if (!logger_is_initialized_) return;
+    if (!logger_is_initialized_) {
+        std::call_once(init_warning_flag_, [&]() {
+            print_(formatWarning_(
+                "You are trying to use pressio-log, but it has not been initialized. "
+                "Initialize with PRESSIOLOG_INITIALIZE()."));
+        });
+        return;
+    };
 
     if (current_rank_ == logging_rank_) {
         switch (level) {
