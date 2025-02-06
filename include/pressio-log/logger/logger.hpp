@@ -101,7 +101,7 @@ class Logger {
         // Public logging functions
         void log(LogLevel level, const std::string& message);
         template <typename... Args>
-        void log(LogLevel level, fmt::format_string<Args...> fmt_str, Args&&... args);
+        void log(LogLevel level, const std::string& fmt_str, Args&&... args);
 
         // Public setters
         void setLoggingLevel(LogLevel level);

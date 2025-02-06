@@ -121,14 +121,13 @@ inline void Logger::log(LogLevel level, const std::string& message) {
 }
 
 template <typename... Args>
-inline void Logger::log(LogLevel level, fmt::format_string<Args...> fmt_str, Args&&... args) {
+inline void Logger::log(LogLevel level, const std::string& fmt_str, Args&&... args) {
     try {
         std::string message = fmt::format(fmt_str, utils::prep_for_fmt(std::forward<Args>(args))...);
         log(level, message);
     } catch(const fmt::v11::format_error&) {
-        std::string fmt_string(fmt_str.get().data(), fmt_str.get().size());
         std::ostringstream oss;
-        oss << "fmt could not format given string: " << fmt_string << " with args:\n";
+        oss << "fmt could not format given string: " << fmt_str << " with args:\n";
         ((oss << "  " << std::to_string(args) << "\n"), ...);
         throw std::runtime_error(oss.str());
     }
