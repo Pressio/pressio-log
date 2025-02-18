@@ -69,8 +69,10 @@ inline void Logger::initialize(
         setOutputFilename(filename);
         formatRankString_();
         logger_is_initialized_.store(true, std::memory_order_release);
-        log(LogLevel::info, colors::green("pressio-log initialized."));
     });
+    if (logger_is_initialized_) {
+        log(LogLevel::info, colors::green("pressio-log initialized."));
+    }
 }
 
 #if PRESSIO_ENABLE_TPL_MPI
@@ -123,7 +125,7 @@ inline void Logger::log(LogLevel level, const std::string& message) {
 template <typename... Args>
 inline void Logger::log(LogLevel level, const std::string& fmt_str, Args&&... args) {
     try {
-        std::string message = fmt::format(fmt_str, utils::prep_for_fmt(std::forward<Args>(args))...);
+        std::string message = fmt::format(fmt::runtime(fmt_str), utils::prep_for_fmt(std::forward<Args>(args))...);
         log(level, message);
     } catch(const fmt::v11::format_error&) {
         std::ostringstream oss;

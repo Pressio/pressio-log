@@ -6,7 +6,7 @@
 
 #define FMT_HEADER_ONLY
 
-#if PRESSIO_EXTERNAL_FMT
+#if PRESSIO_ENABLE_EXTERNAL_FMT
     #include <fmt/format.h>
 #else
     #include <pressio-log/fmt/format.h>
