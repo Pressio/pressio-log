@@ -11,22 +11,24 @@ _This is a work in progress, and all subsequent information is subject to change
 git clone https://github.com/Pressio/pressio-log.git
 ```
 
-2. **Configure** the logger via CMake
 
-| CMake Variable                       | Default Value |
-| :----------------------------------- | ------------: |
-| `-D PRESSIO_SILENCE_WARNINGS`        |          `OFF`|
-| `-D PRESSIO_ENABLE_TPL_MPI`          |          `OFF`|
-| `-D PRESSIO_ENABLE_COLORIZED_OUTPUT` |          `OFF`|
+2. **Define** any macros
 
-Sample build command:
+You can define any of the following macros before including the core pressio-log file:
 
-```sh
-cd pressio-log
-mkdir build
-cd build
-cmake -D PRESSIO_ENABLE_TPL_MPI=ON .. && make
+```cpp
+#define PRESSIO_SILENCE_WARNINGS 1
+#define PRESSIO_ENABLE_COLORIZED_OUTPUT 1
+#define PRESSIO_ENABLE_EXTERNAL_FMT 1
+#define PRESSIO_ENABLE_TPL_MPI 1
 ```
+
+If you enable an external fmt, make sure that your project properly includes the `fmt` library you would like to use.
+
+By default, the above options are all turned off, and pressio-log uses the in-house `fmt` snapshotted in `include/fmt`.
+
+> [!NOTE]
+> If you are configuring pressio-log using CMake, the above options can be passed as CMake variables (e.g. `-D PRESSIO_SILENCE_WARNINGS=ON`).
 
 3. **Include** the library
 
@@ -99,6 +101,8 @@ PRESSIOLOG_FINALIZE();
 ## Sample Program
 
 ```cpp
+#define PRESSIOLOG_COLORIZE_OUTPUT 1
+
 #include <pressio-log/core.hpp>
 
 int main() {

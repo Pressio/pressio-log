@@ -1,8 +1,55 @@
+# logging options
+#=====================================================================
+option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
+if (PRESSIO_SILENCE_WARNINGS)
+  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=1)
+else ()
+  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=0)
+endif ()
+message(">> PRESSIO_SILENCE_WARNINGS = ${PRESSIO_SILENCE_WARNINGS}")
 
-if (NOT DEFINED PRESSIO_ENABLE_TPL_MPI)
-  option(PRESSIO_ENABLE_TPL_MPI "Enable MPI" OFF)
+option(PRESSIO_ENABLE_COLORIZED_OUTPUT "Enable or disable colorized logging" OFF)
+if (PRESSIO_ENABLE_COLORIZED_OUTPUT)
+  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=1)
+else ()
+  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=0)
+endif ()
+message(">> PRESSIO_ENABLE_COLORIZED_OUTPUT = ${PRESSIO_ENABLE_COLORIZED_OUTPUT}")
+
+# tpls
+#=====================================================================
+# fmt
+option(PRESSIO_ENABLE_EXTERNAL_FMT "Allow using an externally provided fmt library" OFF)
+if (fmt_INCLUDE_DIR OR fmt_ROOT OR fmt_DIR)
+  message(STATUS "Setting PRESSIO_ENABLE_EXTERNAL_FMT=ON because "
+                 "fmt_INCLUDE_DIR, fmt_DIR, or fmt_ROOT was provided.")
+  set(PRESSIO_ENABLE_EXTERNAL_FMT ON)
+endif ()
+if (PRESSIO_ENABLE_EXTERNAL_FMT)
+  add_compile_definitions(PRESSIO_ENABLE_EXTERNAL_FMT=1)
+  find_package(fmt QUIET)
+  if (fmt_FOUND)
+    message(STATUS "Found system-installed fmt")
+    link_libraries(fmt::fmt-header-only)
+  elseif (fmt_INCLUDE_DIR)
+    message(STATUS "Using fmt from fmt_INCLUDE_DIR: ${fmt_INCLUDE_DIR}")
+    include_directories(SYSTEM ${fmt_INCLUDE_DIR})
+  elseif (fmt_ROOT)
+    message(STATUS "Using fmt from fmt_ROOT: ${fmt_ROOT}")
+    include_directories(SYSTEM ${fmt_ROOT}/include)
+  elseif (fmt_DIR)
+    message(STATUS "Using fmt from fmt_DIR: ${fmt_DIR}")
+    include_directories(SYSTEM ${fmt_DIR}/include)
+  else ()
+    message(WARNING "PRESSIO_ENABLE_EXTERNAL_FMT is ON, but fmt was not found. "
+                    "Use fmt_INCLUDE_DIR, fmt_ROOT, or fmt_DIR to provide the correct path.")
+  endif ()
+else ()
+  add_compile_definitions(PRESSIO_ENABLE_EXTERNAL_FMT=0)
 endif ()
 
+# mpi
+option(PRESSIO_ENABLE_TPL_MPI "Enable MPI" OFF)
 if (PRESSIO_ENABLE_TPL_MPI)
   message(">> pressio-log enabling MPI since PRESSIO_ENABLE_TPL_MPI=ON")
   add_compile_definitions(PRESSIO_ENABLE_TPL_MPI=1)
