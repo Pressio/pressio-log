@@ -1,7 +1,5 @@
 # pressio-log
-Logging functionality for Pressio repositories
-
-_This is a work in progress, and all subsequent information is subject to change._
+Header-only logging library for Pressio repositories
 
 ## Instructions for Use:
 
@@ -70,9 +68,19 @@ PRESSIOLOG_WARNING("message");
 PRESSIOLOG_ERROR("message");
 ```
 
+6. **Finalize** the logger
+
+At the end of your program, finalize the logger with
+
+```cpp
+PRESSIOLOG_FINALIZE();
+```
+
+## Tips
+
 Below are **three** tips for use:
 
-- `pressio-log` is equipped with the [`fmt` library](https://github.com/fmtlib/fmt), so formatted strings may be passed to any of the logging commands:
+- `pressio-log` is equipped with [`fmt`](https://github.com/fmtlib/fmt), so formatted strings may be passed to any of the logging commands:
 
 ```cpp
 PRESSIOLOG_INFO("Sample output: {}, {}", 1, 4.5);
@@ -88,14 +96,6 @@ PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo dst);  // console, file, both
 PRESSIOLOG_SET_OUTPUT_FILENAME(std::string filename);
 PRESSIOLOG_SET_LOGGING_RANK(int rank);
 PRESSIOLOG_SET_COMMUNICATOR(MPI_Comm comm);
-```
-
-6. **Finalize** the logger
-
-At the end of your program, finalize the logger with
-
-```cpp
-PRESSIOLOG_FINALIZE();
 ```
 
 ## Sample Program
@@ -124,15 +124,21 @@ int main() {
 
 ## Using With Pressio
 
-`Pressio` is written with `pressio-log` automatically included. Therefore, if you install Pressio and include it in your own application, there is no need to also install or include `pressio-log`.
+If the `PRESSIO_ENABLE_LOGGING` macro is set to `1` (or `ON`, when configuring `pressio` with CMake),
+`pressio` will automatically look for the `pressio-log` library and include the `pressio-log/core.hpp` file.
+
+This means that as long as you have pointed your app to the `pressio-log` include directory, you **do not** need to explicitly include any pressio-log files.
+All macros are available, as well as the `pressiolog::LogLevel` and `pressiolog::LogTo` structs.
 
 Further, since `Pressio` uses `pressio-log` throughout its source code, you only need to initialize and finalize the logger. The rest of the logging will be handled by `Pressio`.
 
-The following example initializes the logger at level `info` to log to a file called `pressio_output.log`.
+The following example initializes the logger with LogLevel `info` and directs the output to a file called `pressio_output.log`.
 
 In practice, this means that all solver output (level: `basic`) and critical program information (level: `info`) from Pressio will be written to that file. Any warnings or errors will also be logged, while all other output (level: `debug`) will be omitted.
 
 ```cpp
+#define PRESSIO_ENABLE_LOGGING 1
+
 #include <pressio/...>
 
 int main() {
@@ -148,7 +154,19 @@ int main() {
 
 ## Testing
 
-After you have built the tests (see step 2), run:
+To build the tests, configure `pressio-log` with the `PRESSIOLOG_ENABLE_TESTS` option turned on:
+
+```sh
+cd pressio-log
+mkdir build
+cd build
+cmake -D PRESSIOLOG_ENABLE_TESTS=ON ..
+make
+```
+
+You can also configure with any of the macros described in Step 2 above.
+
+To run the tests:
 
 ```sh
 cd pressio-log/build/tests/logging
