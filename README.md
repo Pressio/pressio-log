@@ -18,7 +18,7 @@ The logger will log all messages **including and above** the specified logging l
 
 For example, if the logger is set to `pressiolog::LogLevel::info`, all info, warning, error, and sparse messages will be logged.
 
-At the `debug` level, all messages are logged.
+At the `debug` level, all messages are logged. At `none`, no messages are logged.
 
 ### Customized Logging
 
@@ -98,6 +98,8 @@ PRESSIOLOG_WARNING("message");
 PRESSIOLOG_ERROR("message");
 ```
 
+As discussed in [Logging Levels](logging-levels), applications can also define custom macros that correspond to the above logging levels.
+
 6. **Finalize** the logger
 
 At the end of your program, finalize the logger with
@@ -121,7 +123,7 @@ PRESSIOLOG_INFO("Sample output: {}, {}", 1, 4.5);
 - All of the initialization parameters can be overriden via macros:
 
 ```cpp
-PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // none, sparse, info, debug
+PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // see Logging Levels
 PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo dst);  // console, file, both
 PRESSIOLOG_SET_OUTPUT_FILENAME(std::string filename);
 PRESSIOLOG_SET_LOGGING_RANK(int rank);
