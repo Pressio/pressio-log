@@ -9,7 +9,7 @@ void runTest(pressiolog::LogLevel level) {
 
     CoutRedirector redirect;
 
-    PRESSIOLOG_BASIC("Basic");
+    PRESSIOLOG_SPARSE("Sparse");
     PRESSIOLOG_INFO("Info");
     PRESSIOLOG_DEBUG("Debug");
     PRESSIOLOG_WARNING("Warning");
@@ -17,7 +17,7 @@ void runTest(pressiolog::LogLevel level) {
 
     std::string output = redirect.str();
 
-    EXPECT_TRUE(check_output(output, "Basic",   level >= pressiolog::LogLevel::basic));
+    EXPECT_TRUE(check_output(output, "Sparse",  level >= pressiolog::LogLevel::sparse));
     EXPECT_TRUE(check_output(output, "Info",    level >= pressiolog::LogLevel::info));
     EXPECT_TRUE(check_output(output, "Debug",   level >= pressiolog::LogLevel::debug));
     EXPECT_TRUE(check_output(output, "Warning", level >= pressiolog::LogLevel::info));
@@ -28,8 +28,8 @@ TEST_F(LoggerTest, Serial_LogLevel_None) {
     runTest(pressiolog::LogLevel::none);
 }
 
-TEST_F(LoggerTest, Serial_LogLevel_Basic) {
-    runTest(pressiolog::LogLevel::basic);
+TEST_F(LoggerTest, Serial_LogLevel_Sparse) {
+    runTest(pressiolog::LogLevel::sparse);
 }
 
 TEST_F(LoggerTest, Serial_LogLevel_Info) {

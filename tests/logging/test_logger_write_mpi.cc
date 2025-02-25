@@ -26,7 +26,7 @@ void runTest(pressiolog::LogTo dst) {
 
     CoutRedirector redirect;
 
-    PRESSIOLOG_BASIC("Basic");
+    PRESSIOLOG_SPARSE("Sparse");
     PRESSIOLOG_INFO("Info");
 
     PRESSIOLOG_SET_LOGGING_RANK(1);
@@ -42,7 +42,7 @@ void runTest(pressiolog::LogTo dst) {
         dst == pressiolog::LogTo::both) {
         std::string output = redirect.str();
 
-        EXPECT_TRUE(check_output(output, "[0] Basic",   0 == rank));
+        EXPECT_TRUE(check_output(output, "[0] Sparse",  0 == rank));
         EXPECT_TRUE(check_output(output, "[0] Info",    0 == rank));
         EXPECT_TRUE(check_output(output, "[1] Debug",   1 == rank));
         EXPECT_TRUE(check_output(output, "[2] WARNING", 2 == rank));
@@ -54,7 +54,7 @@ void runTest(pressiolog::LogTo dst) {
         dst == pressiolog::LogTo::both)) {
         auto output = read_file(outputFileName);
 
-        EXPECT_TRUE(check_output(output, "[0] Basic",   true));
+        EXPECT_TRUE(check_output(output, "[0] Sparse",  true));
         EXPECT_TRUE(check_output(output, "[0] Info",    true));
         EXPECT_TRUE(check_output(output, "[1] Debug",   true));
         EXPECT_TRUE(check_output(output, "[2] WARNING", true));

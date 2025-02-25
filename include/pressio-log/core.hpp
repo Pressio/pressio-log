@@ -57,11 +57,11 @@
 #define LOG(level, ...) \
    pressiolog::Logger::PressioLogger()->log(level, __VA_ARGS__);
 
-#define PRESSIOLOG_BASIC(...)   LOG(pressiolog::LogLevel::basic, __VA_ARGS__)
-#define PRESSIOLOG_INFO(...)    LOG(pressiolog::LogLevel::info, __VA_ARGS__)
-#define PRESSIOLOG_DEBUG(...)   LOG(pressiolog::LogLevel::debug, __VA_ARGS__)
+#define PRESSIOLOG_SPARSE(...)  LOG(pressiolog::LogLevel::sparse,  __VA_ARGS__)
+#define PRESSIOLOG_INFO(...)    LOG(pressiolog::LogLevel::info,    __VA_ARGS__)
+#define PRESSIOLOG_DEBUG(...)   LOG(pressiolog::LogLevel::debug,   __VA_ARGS__)
 #define PRESSIOLOG_WARNING(...) LOG(pressiolog::LogLevel::warning, __VA_ARGS__)
-#define PRESSIOLOG_ERROR(...)   LOG(pressiolog::LogLevel::error, __VA_ARGS__)
+#define PRESSIOLOG_ERROR(...)   LOG(pressiolog::LogLevel::error,   __VA_ARGS__)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Initialization/Finalization
