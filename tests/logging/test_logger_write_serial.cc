@@ -11,7 +11,7 @@ void runTest(pressiolog::LogTo dst) {
 
     CoutRedirector redirect;
 
-    PRESSIOLOG_BASIC("Basic");
+    PRESSIOLOG_SPARSE("Sparse");
     PRESSIOLOG_INFO("Info");
     PRESSIOLOG_DEBUG("Debug");
     PRESSIOLOG_WARNING("Warning");
@@ -21,7 +21,7 @@ void runTest(pressiolog::LogTo dst) {
         dst == pressiolog::LogTo::both) {
         auto output = redirect.str();
 
-        EXPECT_TRUE(check_output(output, "Basic",   true));
+        EXPECT_TRUE(check_output(output, "Sparse",  true));
         EXPECT_TRUE(check_output(output, "Info",    true));
         EXPECT_TRUE(check_output(output, "Debug",   true));
         EXPECT_TRUE(check_output(output, "Warning", true));
@@ -33,7 +33,7 @@ void runTest(pressiolog::LogTo dst) {
         const std::string fileName = "pressio.log";
         auto output = read_file(fileName);
 
-        EXPECT_TRUE(check_output(output, "Basic",   true));
+        EXPECT_TRUE(check_output(output, "Sparse",  true));
         EXPECT_TRUE(check_output(output, "Info",    true));
         EXPECT_TRUE(check_output(output, "Debug",   true));
         EXPECT_TRUE(check_output(output, "Warning", true));

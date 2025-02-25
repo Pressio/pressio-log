@@ -5,15 +5,15 @@
 #include "pressio-log/core.hpp"
 
 void runTest() {
-    PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::basic);
+    PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel::sparse);
 
     CoutRedirector redirect;
 
     int a = 1;
-    PRESSIOLOG_BASIC("Test, {:>3}", a);
-    PRESSIOLOG_BASIC("Left aligned: {:<10}", 42);
-    PRESSIOLOG_BASIC("Right aligned: {:>10}", 42);
-    PRESSIOLOG_BASIC("Center aligned: {:^10}", 42);
+    PRESSIOLOG_SPARSE("Test, {:>3}", a);
+    PRESSIOLOG_SPARSE("Left aligned: {:<10}", 42);
+    PRESSIOLOG_SPARSE("Right aligned: {:>10}", 42);
+    PRESSIOLOG_SPARSE("Center aligned: {:^10}", 42);
 
     std::string output = redirect.str();
 

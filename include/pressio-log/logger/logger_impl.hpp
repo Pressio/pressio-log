@@ -113,7 +113,7 @@ inline void Logger::log(LogLevel level, const std::string& message) {
     if (current_rank_ == logging_rank_) {
         switch (level) {
             case LogLevel::none:    return;
-            case LogLevel::basic:   basic_(message);   break;
+            case LogLevel::sparse:   sparse_(message);   break;
             case LogLevel::info:    info_(message);    break;
             case LogLevel::debug:   debug_(message);   break;
             case LogLevel::warning: warning_(message); break;
@@ -217,10 +217,22 @@ inline std::string Logger::formatError_(const std::string& message) const {
 ///////////////////////////////////////////////////////////////////////////////
 // Internal logging functions
 
-inline void Logger::basic_(const std::string& message) {
-    if (logging_level_ >= LogLevel::basic) {
+inline void Logger::sparse_(const std::string& message) {
+    if (logging_level_ >= LogLevel::sparse) {
         log_(message);
     }
+}
+inline void Logger::error_(const std::string& message) {
+    if (logging_level_ >= LogLevel::error) {
+        log_(formatError_(message));
+    }
+}
+inline void Logger::warning_(const std::string& message) {
+    #if not PRESSIO_SILENCE_WARNINGS
+    if (logging_level_ >= LogLevel::warning) {
+        log_(formatWarning_(message));
+    }
+    #endif
 }
 inline void Logger::info_(const std::string& message) {
     if (logging_level_ >= LogLevel::info) {
@@ -230,18 +242,6 @@ inline void Logger::info_(const std::string& message) {
 inline void Logger::debug_(const std::string& message) {
     if (logging_level_ >= LogLevel::debug) {
         log_(message);
-    }
-}
-inline void Logger::warning_(const std::string& message) {
-    #if not PRESSIO_SILENCE_WARNINGS
-    if (logging_level_ >= LogLevel::info) {
-        log_(formatWarning_(message));
-    }
-    #endif
-}
-inline void Logger::error_(const std::string& message) {
-    if (logging_level_ >= LogLevel::info) {
-        log_(formatError_(message));
     }
 }
 

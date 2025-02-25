@@ -25,7 +25,7 @@ void runTest(LogLevel level) {
 
     CoutRedirector redirect;
 
-    PRESSIOLOG_BASIC("Basic");
+    PRESSIOLOG_SPARSE("Sparse");
     PRESSIOLOG_INFO("Info");
 
     PRESSIOLOG_SET_LOGGING_RANK(1);
@@ -37,11 +37,11 @@ void runTest(LogLevel level) {
 
     std::string output = redirect.str();
 
-    EXPECT_TRUE(check_output(output, "[0] Basic",   condition(level, LogLevel::basic, 0, rank)));
-    EXPECT_TRUE(check_output(output, "[0] Info",    condition(level, LogLevel::info,  0, rank)));
-    EXPECT_TRUE(check_output(output, "[1] Debug",   condition(level, LogLevel::debug, 1, rank)));
-    EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::info,  2, rank)));
-    EXPECT_TRUE(check_output(output, "[2] ERROR",   condition(level, LogLevel::info,  2, rank)));
+    EXPECT_TRUE(check_output(output, "[0] Sparse",  condition(level, LogLevel::sparse, 0, rank)));
+    EXPECT_TRUE(check_output(output, "[0] Info",    condition(level, LogLevel::info,   0, rank)));
+    EXPECT_TRUE(check_output(output, "[1] Debug",   condition(level, LogLevel::debug,  1, rank)));
+    EXPECT_TRUE(check_output(output, "[2] WARNING", condition(level, LogLevel::info,   2, rank)));
+    EXPECT_TRUE(check_output(output, "[2] ERROR",   condition(level, LogLevel::info,   2, rank)));
 
     MPI_Barrier(MPI_COMM_WORLD);
 }
@@ -50,8 +50,8 @@ TEST_F(LoggerTest, Parallel_LogLevel_None) {
     runTest(LogLevel::none);
 }
 
-TEST_F(LoggerTest, Parallel_LogLevel_Basic) {
-    runTest(LogLevel::basic);
+TEST_F(LoggerTest, Parallel_LogLevel_Sparse) {
+    runTest(LogLevel::sparse);
 }
 
 TEST_F(LoggerTest, Parallel_LogLevel_Info) {

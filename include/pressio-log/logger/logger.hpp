@@ -83,13 +83,13 @@ class Logger {
 
         // Initialization and finalization
         void initialize(
-            LogLevel level = LogLevel::basic,
+            LogLevel level = LogLevel::sparse,
             LogTo destination = LogTo::console,
             const std::string& filename = "pressio.log"
         );
         #if PRESSIO_ENABLE_TPL_MPI
         void initializeWithMPI(
-            LogLevel level = LogLevel::basic,
+            LogLevel level = LogLevel::sparse,
             LogTo destination = LogTo::console,
             const std::string& filename = "pressio.log",
             int logging_rank = 0,
@@ -140,7 +140,7 @@ class Logger {
         std::string formatError_(const std::string& message) const;
 
         // Internal logging functions
-        void basic_(const std::string& message);
+        void sparse_(const std::string& message);
         void info_(const std::string& message);
         void debug_(const std::string& message);
         void warning_(const std::string& message);

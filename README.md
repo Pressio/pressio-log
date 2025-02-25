@@ -1,6 +1,37 @@
 # pressio-log
 Header-only logging library for Pressio repositories
 
+## Logging Levels
+
+There are six logging levels within the `LogLevel` enum:
+
+- `none`
+- `sparse`
+- `error`
+- `warning`
+- `info`
+- `debug`
+
+The level at which the logger runs is determined by the user during initialization (see [Instructions For Use](instructions-for-use)).
+
+The logger will log all messages **including and above** the specified logging level.
+
+For example, if the logger is set to `pressiolog::LogLevel::info`, all info, warning, error, and sparse messages will be logged.
+
+At the `debug` level, all messages are logged.
+
+### Customized Logging
+
+The logging macros can be customized by the application.
+
+For example, an application using pressio-log can define a custom logging macro that forwards to `PRESSIOLOG_SPARSE()`:
+
+```cpp
+#include <pressio-log/core.h>
+
+#define CUSTOM_LOGGING_MACRO(...) PRESSIOLOG_SPARSE(__VA_ARGS__)
+```
+
 ## Instructions for Use:
 
 1. **Clone** the repo
@@ -8,7 +39,6 @@ Header-only logging library for Pressio repositories
 ```sh
 git clone https://github.com/Pressio/pressio-log.git
 ```
-
 
 2. **Define** any macros
 
@@ -48,7 +78,7 @@ The initialization function takes several optional arguments. The arguments, and
 
 ```cpp
 PRESSIOLOG_INITIALIZE(
-    pressiolog::LogLevel level = basic,
+    pressiolog::LogLevel level = sparse,
     pressiolog::LogTo dst      = console,
     std::string logfileName    = "pressio.log",
     int loggingRank            = 0,              // only when PRESSIO_ENABLE_TPL_MPI=ON
@@ -61,7 +91,7 @@ PRESSIOLOG_INITIALIZE(
 All logging is handled via macros:
 
 ```cpp
-PRESSIOLOG_BASIC("message");
+PRESSIOLOG_SPARSE("message");
 PRESSIOLOG_INFO("message");
 PRESSIOLOG_DEBUG("message");
 PRESSIOLOG_WARNING("message");
@@ -91,7 +121,7 @@ PRESSIOLOG_INFO("Sample output: {}, {}", 1, 4.5);
 - All of the initialization parameters can be overriden via macros:
 
 ```cpp
-PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // none, basic, info, debug
+PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // none, sparse, info, debug
 PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo dst);  // console, file, both
 PRESSIOLOG_SET_OUTPUT_FILENAME(std::string filename);
 PRESSIOLOG_SET_LOGGING_RANK(int rank);
@@ -134,7 +164,7 @@ Further, since `Pressio` uses `pressio-log` throughout its source code, you only
 
 The following example initializes the logger with LogLevel `info` and directs the output to a file called `pressio_output.log`.
 
-In practice, this means that all solver output (level: `basic`) and critical program information (level: `info`) from Pressio will be written to that file. Any warnings or errors will also be logged, while all other output (level: `debug`) will be omitted.
+In practice, this means that all solver output (level: `sparse`) and critical program information (level: `info`) from Pressio will be written to that file. Any warnings or errors will also be logged, while all other output (level: `debug`) will be omitted.
 
 ```cpp
 #define PRESSIO_ENABLE_LOGGING 1

@@ -55,21 +55,21 @@ namespace pressiolog {
 
 enum class LogLevel : int {
     none,
-    basic,
-    info,
-    debug,
+    sparse,
+    error,
     warning,
-    error
+    info,
+    debug
 };
 
 inline std::ostream& operator<<(std::ostream& os, LogLevel level) {
     switch (level) {
         case LogLevel::none:    return os << "none";
-        case LogLevel::basic:   return os << "basic";
+        case LogLevel::sparse:  return os << "sparse";
+        case LogLevel::error:   return os << "error";
+        case LogLevel::warning: return os << "warning";
         case LogLevel::info:    return os << "info";
         case LogLevel::debug:   return os << "debug";
-        case LogLevel::warning: return os << "warning";
-        case LogLevel::error:   return os << "error";
         default:                return os << "unknown";
     }
 }
