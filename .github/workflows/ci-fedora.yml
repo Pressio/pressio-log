@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake --build build --target install
+          cmake --build build-
 
       - name: Run tests
         working-directory: build/tests/logging

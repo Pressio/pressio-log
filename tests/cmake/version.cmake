@@ -1,4 +1,3 @@
-
 # adapted from eigen
 file(READ "${PROJECT_SOURCE_DIR}/include/pressio-log/version.hpp" _pressiolog_version)
 string(REGEX MATCH "define[ \t]+PRESSIOLOG_MAJOR_VERSION[ \t]+([0-9]+)" _major_version_match "${_pressiolog_version}")

@@ -5,6 +5,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(macrosForCreatingTests)
 include(macrosForCreatingUnitTests)
 include(options)
+include(colors)
+include(version)
 
 # ---------------------------------
 # 1. find or get gtest
