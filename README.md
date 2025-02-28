@@ -1,22 +1,33 @@
 # pressio-log
-Header-only logging library for Pressio repositories
+### Header-only logging library for Pressio repositories
+
+Contents:
+- [Logging Levels](logging-levels)
+    - [Customized Logging](customized-logging)
+- [Instructions for Use](instructions-for-use)
+    - [Tips](tips)
+    - [Sample Program](sample-program)
+    - [Using With Pressio](using-with-pressio)
+- [Testing](testing)
 
 ## Logging Levels
 
 There are six logging levels within the `LogLevel` enum:
 
-- `none`
-- `sparse`
-- `error`
-- `warning`
-- `info`
-- `debug`
+| Logging Levels | Description of Output |
+| :------------: | :-------------------- |
+| `none`         | No output             |
+| `sparse`       | Essential output      |
+| `error`        | Error messages        |
+| `warning`      | Warning messages      |
+| `info`         | Standard output       |
+| `debug`        | All output            |
 
 The level at which the logger runs is determined by the user during initialization (see [Instructions For Use](instructions-for-use)).
 
 The logger will log all messages **including and above** the specified logging level.
 
-For example, if the logger is set to `pressiolog::LogLevel::info`, all info, warning, error, and sparse messages will be logged.
+For example, if the logger is set to `pressiolog::LogLevel::info`, all `info`, `warning`, `error`, and `sparse` messages will be logged.
 
 At the `debug` level, all messages are logged. At `none`, no messages are logged.
 
@@ -32,7 +43,18 @@ For example, an application using pressio-log can define a custom logging macro 
 #define CUSTOM_LOGGING_MACRO(...) PRESSIOLOG_SPARSE(__VA_ARGS__)
 ```
 
-## Instructions for Use:
+## Instructions for Use
+
+There are six key steps for using pressio-log:
+
+1. Clone the repo
+2. Define any macros
+3. Include the library
+4. Initialize the logger
+5. Use the library
+6. Finalize the logger
+
+These steps are detailed below:
 
 1. **Clone** the repo
 
@@ -54,9 +76,6 @@ You can define any of the following macros before including the core pressio-log
 If you enable an external fmt, make sure that your project properly includes the `fmt` library you would like to use.
 
 By default, the above options are all turned off, and pressio-log uses the in-house `fmt` snapshotted in `include/fmt`.
-
-> [!NOTE]
-> If you are configuring pressio-log using CMake, the above options can be passed as CMake variables (e.g. `-D PRESSIO_SILENCE_WARNINGS=ON`).
 
 3. **Include** the library
 
@@ -108,7 +127,7 @@ At the end of your program, finalize the logger with
 PRESSIOLOG_FINALIZE();
 ```
 
-## Tips
+### Tips
 
 Below are **three** tips for use:
 
@@ -130,7 +149,7 @@ PRESSIOLOG_SET_LOGGING_RANK(int rank);
 PRESSIOLOG_SET_COMMUNICATOR(MPI_Comm comm);
 ```
 
-## Sample Program
+### Sample Program
 
 ```cpp
 #define PRESSIOLOG_COLORIZE_OUTPUT 1
@@ -154,13 +173,13 @@ int main() {
 
 ```
 
-## Using With Pressio
+### Using With Pressio
 
 If the `PRESSIO_ENABLE_LOGGING` macro is set to `1` (or `ON`, when configuring `pressio` with CMake),
 `pressio` will automatically look for the `pressio-log` library and include the `pressio-log/core.hpp` file.
 
 This means that as long as you have pointed your app to the `pressio-log` include directory, you **do not** need to explicitly include any pressio-log files.
-All macros are available, as well as the `pressiolog::LogLevel` and `pressiolog::LogTo` structs.
+All logging macros are available, as well as the `pressiolog::LogLevel` and `pressiolog::LogTo` enums.
 
 Further, since `Pressio` uses `pressio-log` throughout its source code, you only need to initialize and finalize the logger. The rest of the logging will be handled by `Pressio`.
 
@@ -186,7 +205,7 @@ int main() {
 
 ## Testing
 
-To build the tests, configure `pressio-log` with the `PRESSIOLOG_ENABLE_TESTS` option turned on:
+To build the tests, configure and build `pressio-log` with `PRESSIOLOG_ENABLE_TESTS` turned on:
 
 ```sh
 cd pressio-log
@@ -196,12 +215,10 @@ cmake -D PRESSIOLOG_ENABLE_TESTS=ON ..
 make
 ```
 
-You can also configure with any of the macros described in Step 2 above.
-
 To run the tests:
 
 ```sh
-cd pressio-log/build/tests/logging
+cd pressio-log/build
 ctest -j <np>
 ```
 
