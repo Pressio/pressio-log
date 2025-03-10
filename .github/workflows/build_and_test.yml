@@ -1,4 +1,4 @@
-name: Build and Test (Fedora)
+name: Build and Test
 
 on:
   pull_request:
@@ -23,10 +23,11 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - fedora-clang17
-          - fedora-gnu13
+          - ubuntu-02
+          - ubuntu-04
         cmake_extra_args:
           - ''
+          - '-D PRESSIO_ENABLE_TPL_MPI=ON'
 
     runs-on: ubuntu-latest
     container:
@@ -34,9 +35,17 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
+    env:
+      num_cpus: 3
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Prepare environment
+        run: |
+          echo "localhost slots=$num_cpus" | tee -a /etc/openmpi/openmpi-default-hostfile
 
       - name: Configure
         run: |
@@ -53,4 +62,4 @@ jobs:
       - name: Run tests
         working-directory: build/tests/logging
         run: |
-          ctest --output-on-failure
+          ctest -j $num_cpus --output-on-failure
