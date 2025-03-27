@@ -63,7 +63,8 @@ namespace pressiolog {
 
 inline void Logger::initialize(
     LogLevel level, LogTo destination, const std::string& filename) {
-    std::call_once(init_flag_, [&]() {
+    std::unique_lock<std::mutex> lock(init_mutex_);
+    std::call_once(*init_flag_, [&]() {
         setLoggingLevel(level);
         setOutputStream(destination);
         setOutputFilename(filename);
@@ -93,7 +94,12 @@ inline void Logger::initializeWithMPI(
 #endif
 
 inline void Logger::finalize() {
+    std::unique_lock<std::mutex> lock(init_mutex_);
     log(LogLevel::info, colors::green("pressio-log finalized."));
+    setLoggingLevel(LogLevel::none);
+    logger_is_initialized_.store(false, std::memory_order_release);
+    init_flag_ = std::make_unique<std::once_flag>();
+    init_warning_flag_ = std::make_unique<std::once_flag>();
     return;
 }
 
@@ -102,7 +108,7 @@ inline void Logger::finalize() {
 
 inline void Logger::log(LogLevel level, const std::string& message) {
     if (!logger_is_initialized_) {
-        std::call_once(init_warning_flag_, [&]() {
+        std::call_once(*init_warning_flag_, [&]() {
             print_(formatWarning_(
                 "You are trying to use pressio-log, but it has not been initialized. "
                 "Initialize with PRESSIOLOG_INITIALIZE()."));
