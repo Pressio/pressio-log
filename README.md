@@ -2,13 +2,13 @@
 ### Header-only logging library for Pressio repositories
 
 Contents:
-- [Logging Levels](logging-levels)
-    - [Customized Logging](customized-logging)
-- [Instructions for Use](instructions-for-use)
-    - [Tips](tips)
-    - [Sample Program](sample-program)
-    - [Using With Pressio](using-with-pressio)
-- [Testing](testing)
+- [Logging Levels](#logging-levels)
+    - [Customized Logging](#customized-logging)
+- [Instructions for Use](#instructions-for-use)
+    - [Tips](#tips)
+    - [Sample Program](#sample-program)
+    - [Using With Pressio](#using-with-pressio)
+- [Testing](#testing)
 
 ## Logging Levels
 
