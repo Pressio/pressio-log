@@ -2,13 +2,13 @@
 ### Header-only logging library for Pressio repositories
 
 Contents:
-- [Logging Levels](logging-levels)
-    - [Customized Logging](customized-logging)
-- [Instructions for Use](instructions-for-use)
-    - [Tips](tips)
-    - [Sample Program](sample-program)
-    - [Using With Pressio](using-with-pressio)
-- [Testing](testing)
+- [Logging Levels](#logging-levels)
+    - [Customized Logging](#customized-logging)
+- [Instructions for Use](#instructions-for-use)
+    - [Tips](#tips)
+    - [Sample Program](#sample-program)
+    - [Using With Pressio-ROM](#using-with-pressio-rom)
+- [Testing](#testing)
 
 ## Logging Levels
 
@@ -142,7 +142,7 @@ PRESSIOLOG_INFO("Sample output: {}, {}", 1, 4.5);
 - All of the initialization parameters can be overriden via macros:
 
 ```cpp
-PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // see Logging Levels
+PRESSIOLOG_SET_LEVEL(pressiolog::LogLevel level);     // see 'Logging Levels'
 PRESSIOLOG_SET_OUTPUT_STREAM(pressiolog::LogTo dst);  // console, file, both
 PRESSIOLOG_SET_OUTPUT_FILENAME(std::string filename);
 PRESSIOLOG_SET_LOGGING_RANK(int rank);
@@ -173,15 +173,16 @@ int main() {
 
 ```
 
-### Using With Pressio
+### Using With Pressio-ROM
 
-If the `PRESSIO_ENABLE_LOGGING` macro is set to `1` (or `ON`, when configuring `pressio` with CMake),
-`pressio` will automatically look for the `pressio-log` library and include the `pressio-log/core.hpp` file.
+If the `PRESSIO_ENABLE_LOGGING` macro is set to `1`, `pressio-rom` will automatically look for the
+`pressio-log` library and include the `pressio-log/core.hpp` file.
 
 This means that as long as you have pointed your app to the `pressio-log` include directory, you **do not** need to explicitly include any pressio-log files.
 All logging macros are available, as well as the `pressiolog::LogLevel` and `pressiolog::LogTo` enums.
 
-Further, since `Pressio` uses `pressio-log` throughout its source code, you only need to initialize and finalize the logger. The rest of the logging will be handled by `Pressio`.
+Further, since `pressio-rom` uses `pressio-log` throughout its source code, you only need to initialize and finalize the logger.
+The rest of the logging will be handled by `pressio-rom`.
 
 The following example initializes the logger with LogLevel `info` and directs the output to a file called `pressio_output.log`.
 
@@ -197,7 +198,7 @@ int main() {
         pressiolog::LogLevel::info,
         pressiolog::LogTo::file,
         "pressio_output.log");
-    // pressio code here
+    // pressio-rom code here
     PRESSIOLOG_FINALIZE();
 }
 
