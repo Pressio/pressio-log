@@ -7,7 +7,7 @@ Contents:
 - [Instructions for Use](#instructions-for-use)
     - [Tips](#tips)
     - [Sample Program](#sample-program)
-    - [Using With Pressio-ROM](#using-with-pressio-rom)
+    - [Using With pressio-rom](#using-with-pressio-rom)
 - [Testing](#testing)
 
 ## Logging Levels
@@ -173,7 +173,7 @@ int main() {
 
 ```
 
-### Using With Pressio-ROM
+### Using With pressio-rom
 
 If the `PRESSIO_ENABLE_LOGGING` macro is set to `1`, `pressio-rom` will automatically look for the
 `pressio-log` library and include the `pressio-log/core.hpp` file.
