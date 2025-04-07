@@ -67,15 +67,15 @@ git clone https://github.com/Pressio/pressio-log.git
 You can define any of the following macros before including the core pressio-log file:
 
 ```cpp
-#define PRESSIO_SILENCE_WARNINGS 1
-#define PRESSIO_ENABLE_COLORIZED_OUTPUT 1
-#define PRESSIO_ENABLE_EXTERNAL_FMT 1
-#define PRESSIO_ENABLE_TPL_MPI 1
+#define PRESSIO_SILENCE_WARNINGS
+#define PRESSIO_ENABLE_COLORIZED_OUTPUT
+#define PRESSIO_ENABLE_EXTERNAL_FMT
+#define PRESSIO_ENABLE_TPL_MPI
 ```
 
 If you enable an external fmt, make sure that your project properly includes the `fmt` library you would like to use.
 
-By default, the above options are all turned off, and pressio-log uses the in-house `fmt` snapshotted in `include/fmt`.
+By default, the above options are not defined, and pressio-log uses the in-house `fmt` snapshotted in `include/fmt`.
 
 3. **Include** the library
 
@@ -152,7 +152,7 @@ PRESSIOLOG_SET_COMMUNICATOR(MPI_Comm comm);
 ### Sample Program
 
 ```cpp
-#define PRESSIOLOG_COLORIZE_OUTPUT 1
+#define PRESSIOLOG_COLORIZE_OUTPUT
 
 #include <pressio-log/core.hpp>
 
@@ -175,7 +175,7 @@ int main() {
 
 ### Using With pressio-rom
 
-If the `PRESSIO_ENABLE_LOGGING` macro is set to `1`, `pressio-rom` will automatically look for the
+If the `PRESSIO_ENABLE_LOGGING` macro is defined`, `pressio-rom` will automatically look for the
 `pressio-log` library and include the `pressio-log/core.hpp` file.
 
 This means that as long as you have pointed your app to the `pressio-log` include directory, you **do not** need to explicitly include any pressio-log files.
@@ -189,7 +189,7 @@ The following example initializes the logger with LogLevel `info` and directs th
 In practice, this means that all solver output (level: `sparse`) and critical program information (level: `info`) from Pressio will be written to that file. Any warnings or errors will also be logged, while all other output (level: `debug`) will be omitted.
 
 ```cpp
-#define PRESSIO_ENABLE_LOGGING 1
+#define PRESSIO_ENABLE_LOGGING
 
 #include <pressio/...>
 

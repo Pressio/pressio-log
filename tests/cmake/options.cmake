@@ -3,16 +3,12 @@
 option(PRESSIO_SILENCE_WARNINGS "Enable or disable warnings" OFF)
 if (PRESSIO_SILENCE_WARNINGS)
   add_compile_definitions(PRESSIO_SILENCE_WARNINGS=1)
-else ()
-  add_compile_definitions(PRESSIO_SILENCE_WARNINGS=0)
 endif ()
 message(">> PRESSIO_SILENCE_WARNINGS = ${PRESSIO_SILENCE_WARNINGS}")
 
 option(PRESSIO_ENABLE_COLORIZED_OUTPUT "Enable or disable colorized logging" OFF)
 if (PRESSIO_ENABLE_COLORIZED_OUTPUT)
   add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=1)
-else ()
-  add_compile_definitions(PRESSIO_ENABLE_COLORIZED_OUTPUT=0)
 endif ()
 message(">> PRESSIO_ENABLE_COLORIZED_OUTPUT = ${PRESSIO_ENABLE_COLORIZED_OUTPUT}")
 
@@ -44,8 +40,6 @@ if (PRESSIO_ENABLE_EXTERNAL_FMT)
     message(WARNING "PRESSIO_ENABLE_EXTERNAL_FMT is ON, but fmt was not found. "
                     "Use fmt_INCLUDE_DIR, fmt_ROOT, or fmt_DIR to provide the correct path.")
   endif ()
-else ()
-  add_compile_definitions(PRESSIO_ENABLE_EXTERNAL_FMT=0)
 endif ()
 
 # mpi
@@ -56,6 +50,4 @@ if (PRESSIO_ENABLE_TPL_MPI)
   find_package(MPI REQUIRED)
   link_libraries(${MPI_CXX_LIBRARIES})
   include_directories(SYSTEM ${MPI_CXX_INCLUDE_DIRS})
-else ()
-  add_compile_definitions(PRESSIO_ENABLE_TPL_MPI=0)
 endif ()
