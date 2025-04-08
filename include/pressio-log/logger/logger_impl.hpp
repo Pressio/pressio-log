@@ -75,7 +75,7 @@ inline void Logger::initialize(
     }
 }
 
-#if PRESSIO_ENABLE_TPL_MPI
+#ifdef PRESSIO_ENABLE_TPL_MPI
 inline void Logger::initializeWithMPI(
     LogLevel level, LogTo destination, const std::string& filename,
     int logging_rank, MPI_Comm comm) {
@@ -151,7 +151,7 @@ inline void Logger::setOutputFilename(const std::string& log_file_name) {
     log_file_ = log_file_name;
 }
 
-#if PRESSIO_ENABLE_TPL_MPI
+#ifdef PRESSIO_ENABLE_TPL_MPI
 inline void Logger::setLoggingRank(int rank) {
     if (mpi_initialized_) {
         int size;
@@ -178,7 +178,7 @@ inline Logger::Logger() {}
 ///////////////////////////////////////////////////////////////////////////////
 // MPI helpers
 
-#if PRESSIO_ENABLE_TPL_MPI
+#ifdef PRESSIO_ENABLE_TPL_MPI
 inline void Logger::updateCurrentRank_() {
     if (mpi_initialized_) {
         MPI_Comm_rank(comm_, &current_rank_);
@@ -228,7 +228,7 @@ inline void Logger::error_(const std::string& message) {
     }
 }
 inline void Logger::warning_(const std::string& message) {
-    #if not PRESSIO_SILENCE_WARNINGS
+    #ifndef PRESSIO_SILENCE_WARNINGS
     if (logging_level_ >= LogLevel::warning) {
         log_(formatWarning_(message));
     }
