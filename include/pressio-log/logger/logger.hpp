@@ -161,8 +161,9 @@ class Logger {
 
         // Initialization
         std::atomic<bool> logger_is_initialized_{false};
-        std::once_flag init_flag_;
-        std::once_flag init_warning_flag_;
+        std::unique_ptr<std::once_flag> init_flag_ = std::make_unique<std::once_flag>();
+        std::unique_ptr<std::once_flag> init_warning_flag_ = std::make_unique<std::once_flag>();
+        std::mutex init_mutex_;
 
         // Configuration
         LogLevel logging_level_{LogLevel::none};

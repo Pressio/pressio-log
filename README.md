@@ -9,6 +9,7 @@ Contents:
     - [Sample Program](#sample-program)
     - [Using With pressio-rom](#using-with-pressio-rom)
 - [Testing](#testing)
+- [Thread Safety](#thread-safety)
 
 ## Logging Levels
 
@@ -225,3 +226,13 @@ ctest -j <np>
 
 > [!NOTE]
 > All MPI tests require at least three processors to run.
+
+## Thread Safety
+
+`pressio-log` is designed to be thread-safe. For example, logger initialization
+is protected using `std::call_once`, and all output is synchronized with a `std::mutex`.
+
+> [!WARNING]
+> If your compiler does not enable threading, these functionalities may cause runtime errors.
+> See [this issue](https://github.com/Pressio/pressio-log/issues/9) for more information and
+> [let us know](https://github.com/Pressio/pressio-log/issues/new) if you encounter any problems.
