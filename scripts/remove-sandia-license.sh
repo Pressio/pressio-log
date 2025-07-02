@@ -2,8 +2,6 @@
 
 set -e
 
-source bash_colors.sh
-
 # check cmd line args
 if [[ "$#" -gt 2 ]] || [[ "$#" -eq 0 ]]; then
   echo "usage: $0 <target-dir> extension"

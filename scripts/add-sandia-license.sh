@@ -2,8 +2,6 @@
 
 set -e
 
-source bash_colors.sh
-
 # check cmd line args
 if [ "$#" -lt 2 ]; then
   echo "usage: $0 <target-dir> <license-template-file> [extension]"
