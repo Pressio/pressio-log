@@ -32,15 +32,12 @@ do
 
   if ! grep -q 'Ennio' "$file"
   then
-      if [[ "${filedir}" != *"logger"* ]]
-      then
-	  echo "Admissible file $filename in $filedir"
-	  licensetmp=$(mktemp)
-	  filetmp=$(mktemp)
-	  echo "${fggreen}Running on file=$file, targetdir=$filedir, license=$licensefile, tmp=${filetmp} ${fgrst}"
-	  sed 's/\<file-name.hpp\>/'$filename'/g' $licensefile > $licensetmp
-	  cat $licensetmp $file > $filetmp
-	  mv $filetmp $file
-      fi
+      echo "Admissible file $filename in $filedir"
+      licensetmp=$(mktemp)
+      filetmp=$(mktemp)
+      echo "${fggreen}Running on file=$file, targetdir=$filedir, license=$licensefile, tmp=${filetmp} ${fgrst}"
+      sed 's/\<file-name.hpp\>/'$filename'/g' $licensefile > $licensetmp
+      cat $licensetmp $file > $filetmp
+      mv $filetmp $file
   fi
 done
