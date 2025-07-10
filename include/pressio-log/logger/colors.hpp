@@ -3,8 +3,8 @@
 // ************************************************************************
 //
 // colors.hpp
-//                     		     pressio-log
-//                             Copyright 2025
+//                     	         Pressio
+//                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
 // Under the terms of Contract DE-NA0003525 with NTESS, the
@@ -74,4 +74,4 @@ inline std::string yellow(std::string str) {
 
 }} // end namespace pressiolog::colors
 
-#endif // PRESSIOLOG_LOGGER_COLORS_HPP_
+#endif  // PRESSIOLOG_LOGGER_COLORS_HPP_

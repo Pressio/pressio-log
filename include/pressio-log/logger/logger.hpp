@@ -3,8 +3,8 @@
 // ************************************************************************
 //
 // logger.hpp
-//                     		     pressio-log
-//                             Copyright 2025
+//                     	         Pressio
+//                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
 // Under the terms of Contract DE-NA0003525 with NTESS, the
@@ -184,4 +184,4 @@ class Logger {
 
 } // end namespace pressiolog
 
-#endif // PRESSIOLOG_LOGGER_LOGGER_HPP_
+#endif  // PRESSIOLOG_LOGGER_LOGGER_HPP_

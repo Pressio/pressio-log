@@ -3,8 +3,8 @@
 // ************************************************************************
 //
 // loglevel.hpp
-//                     		     pressio-log
-//                             Copyright 2025
+//                     	         Pressio
+//                             Copyright 2019
 //    National Technology & Engineering Solutions of Sandia, LLC (NTESS)
 //
 // Under the terms of Contract DE-NA0003525 with NTESS, the
@@ -76,4 +76,4 @@ inline std::ostream& operator<<(std::ostream& os, LogLevel level) {
 
 } // end namespace pressiolog
 
-#endif // PRESSIOLOG_LOGGER_LOGLEVEL_HPP_
+#endif  // PRESSIOLOG_LOGGER_LOGLEVEL_HPP_
