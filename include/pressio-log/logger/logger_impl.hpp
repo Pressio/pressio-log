@@ -119,7 +119,7 @@ inline void Logger::log(LogLevel level, const std::string& message) {
     if (current_rank_ == logging_rank_) {
         switch (level) {
             case LogLevel::none:    return;
-            case LogLevel::sparse:   sparse_(message);   break;
+            case LogLevel::sparse:  sparse_(message);   break;
             case LogLevel::info:    info_(message);    break;
             case LogLevel::debug:   debug_(message);   break;
             case LogLevel::warning: warning_(message); break;
@@ -136,7 +136,7 @@ inline void Logger::log(LogLevel level, const std::string& fmt_str, Args&&... ar
     } catch(const fmt::v11::format_error&) {
         std::ostringstream oss;
         oss << "fmt could not format given string: " << fmt_str << " with args:\n";
-        ((oss << "  " << std::to_string(args) << "\n"), ...);
+        ((oss << "  " << args << "\n"), ...);
         throw std::runtime_error(oss.str());
     }
 }
