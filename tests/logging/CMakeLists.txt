@@ -13,6 +13,11 @@ add_utest_serial(
   ${CMAKE_CURRENT_SOURCE_DIR}/test_logger_write_serial.cc
 )
 
+add_utest_serial(
+  test_logger_string
+  ${CMAKE_CURRENT_SOURCE_DIR}/test_logger_string.cc
+)
+
 if (PRESSIO_ENABLE_TPL_MPI)
   add_utest_mpi(
     test_logger_mpi gTestMain_mpi 3
